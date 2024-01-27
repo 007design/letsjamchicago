@@ -17,6 +17,7 @@
       <Button label="Save event" @click="doSave" />
     </template>
   </Dialog>
+  <Toast />
 </template>
 
 <script>
@@ -54,11 +55,33 @@ export default {
     },
     async doSave() {
       if (this.event.id) {
-        await updateEvent(this.event);
+        try {
+          await updateEvent(this.event);
+          document.location.href = '/';
+        } catch {
+          this.isDialogVisible = false;
+          this.$toast.add({
+            severity: 'danger',
+            summary: 'Error',
+            detail: 'Could not update event.',
+            life: 3000,
+          });
+        }
       } else {
-        await newEvent(this.event);
+        try {
+          await newEvent(this.event);
+          document.location.href = '/';
+        } catch {
+          this.isDialogVisible = false;
+          this.$toast.add({
+            severity: 'danger',
+            summary: 'Error',
+            detail: 'Could not create event.',
+            life: 3000,
+          });
+        }
       }
-      document.location.href = '/';
+      this.isDialogVisible = false;
     },
   },
 };

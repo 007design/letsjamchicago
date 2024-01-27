@@ -61,10 +61,12 @@ export default {
 
         this.setEvents(data);
       } catch (error) {
-        // this.addAlert({
-        //   title: 'Error retrieving events.',
-        //   type: 'error',
-        // });
+        this.$toast.add({
+          severity: 'danger',
+          summary: 'Error',
+          detail: 'Could not load events. Please sign in again.',
+          life: 3000,
+        });
       }
     },
     editEvent(event) {
@@ -80,8 +82,17 @@ export default {
         acceptClass: 'p-button-danger delete-button',
         acceptLabel: 'Delete event',
         accept: async () => {
-          await deleteEvent(event);
-          this.$router.go();
+          try {
+            await deleteEvent(event);
+            this.loadEvents();
+          } catch {
+            this.$toast.add({
+              severity: 'danger',
+              summary: 'Error',
+              detail: 'Could not delete event. Please sign in again.',
+              life: 3000,
+            });
+          }
         },
       });
     },

@@ -13,11 +13,11 @@
         <div class="event-card-when">
           <i class="pi pi-calendar"></i>
           {{ dateFormatter(event.start_date) }} @ {{ timeFormatter(event.start_time) }}
-          <div v-if="!mqMobile" class="add-to-calendar">
-            <Button link label="Add to calendar" />
-          </div>
           <div v-if="mqMobile">
             <strong>{{ event.location }}</strong>
+          </div>
+          <div class="add-to-calendar">
+            <Button link label="Add to calendar" />
           </div>
         </div>
       </div>
@@ -58,28 +58,37 @@
       <div class="event-card-footer">
         <template v-if="!authenticated">
           <Button
+            class="sign-in-button"
             :size="mqMobile ? 'small': ''"
             label="Sign in to RSVP"
-            disabled
+            @click="() => $router.push({ name: 'SignIn' })"
           />
         </template>
         <template v-else-if="event.owned">
           <Button
+            class="edit-event-button"
             :size="mqMobile ? 'small': ''"
+            severity="secondary"
             label="Edit event"
             @click="editEvent"
           />
         </template>
         <template v-else-if="event.attending">
           <Button
+            class="decline-button"
             :size="mqMobile ? 'small': ''"
+            severity="danger"
             label="Decline event"
+            @click="leaveEvent"
           />
         </template>
         <template v-else>
           <Button
+            class="attend-button"
             :size="mqMobile ? 'small': ''"
+            severity="success"
             label="Attend event"
+            @click="joinEvent"
           />
         </template>
         <Tag severity="success">
@@ -93,6 +102,7 @@
 <script>
 import { mapState } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
+import { joinEvent, leaveEvent } from '@/services/events';
 import mq from '@/utils/mq';
 import { formatDate, formatTime } from '../utils/common';
 
@@ -101,6 +111,7 @@ const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 export default {
   name: 'EventCard',
   mixins: [mq],
+  inject: ['loadEvents'],
   props: {
     event: {
       type: Object,
@@ -133,6 +144,21 @@ export default {
     editEvent() {
       this.$router.push({ name: 'EditEvent', params: { eventId: this.event.id } });
     },
+    async joinEvent() {
+      try {
+        await joinEvent(this.event);
+      } finally {
+        await this.loadEvents();
+      }
+    },
+    async leaveEvent() {
+      try {
+        await leaveEvent(this.event);
+        this.$emit('decline');
+      } finally {
+        await this.loadEvents();
+      }
+    },
   },
 };
 </script>
@@ -140,6 +166,25 @@ export default {
 <style lang="scss" scoped>
 .event-card {
   margin: .5em 0;
+
+  :deep(.p-card-body) {
+    padding: 1em;
+  }
+
+  .p-button.p-button-link {
+    color: #44B6E5;
+    background: transparent;
+  }
+
+  .p-button-sm {
+    padding: .4em .5em;
+    font-size: 14px;
+  }
+}
+
+.sign-in-button {
+  background: #44B6E5;
+  border-color: #44B6E5;
 }
 
 h3 {
@@ -194,6 +239,10 @@ iframe {
 
 .event-card-when {
   margin-bottom: .5em;
+
+  .mobile & {
+    font-size: 14px;
+  }
 }
 
 .add-to-calendar {
@@ -209,25 +258,6 @@ iframe {
 
 .event-description {
   flex: 1 0 auto;
-}
-
-:deep(.p-card-body) {
-  padding: 1em;
-}
-
-.p-button.p-button-link {
-  color: #44B6E5;
-  background: transparent;
-}
-
-.p-button {
-  background: #44B6E5;
-  border-color: #44B6E5;
-}
-
-.p-button-sm {
-  padding: .4em .5em;
-  font-size: 14px;
 }
 </style>
 

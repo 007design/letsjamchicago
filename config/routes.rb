@@ -27,8 +27,13 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :users, only: [:index]
-      resources :events
+      resources :users, only: [:index] do
+        get 'attending', on: :member
+      end
+      resources :events do
+        get 'attend', on: :member
+        delete 'decline', on: :member
+      end
     end
   end
 

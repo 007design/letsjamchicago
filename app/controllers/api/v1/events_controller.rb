@@ -12,13 +12,13 @@ class Api::V1::EventsController < ApplicationController
       }, status: :unauthorized
     else
       events = Event.left_outer_joins(:attendees)
-        .select("events.*, COUNT(attendees.id) as attendee_count, CAST(CASE WHEN events.user_id = #{user_id} THEN true ELSE false END AS BOOLEAN) as owned")
+        .select("events.*, COUNT(attendees.id) as attendee_count, CAST(CASE WHEN events.user_id = #{user_id} THEN true ELSE false END AS BOOLEAN) as owned, EXISTS(SELECT * FROM attendees WHERE attendees.user_id = #{user_id} AND attendees.event_id = events.id) as attending")
       events = events.where('start_date >= ?', DateTime.now) if params[:u].nil?
       events = events.where('events.user_id = ?', params[:u]) if params[:u].present? && user_id.to_s == params[:u]
       events = events.where('neighborhood = ?', params[:n]) if params[:n].present?
       events = events.group('events.id')
-      events = events.order('events.start_time, events.start_date')
-      render json: events.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date', 'start_time', 'attendee_count', 'owned'])
+      events = events.order('events.start_time, events.start_date DESC')
+      render json: events.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date', 'start_time', 'attendee_count', 'owned', 'attending'])
     end
   end
 
@@ -62,6 +62,25 @@ class Api::V1::EventsController < ApplicationController
   def destroy
     event = Event.find(params[:id])
     event.destroy
+
+    render json: event.to_json
+  end
+
+  def attend
+    event = Event.find(params[:id])
+    attendee = Attendee.new(event: event, user: current_user)
+
+    if attendee.save
+      render json: attendee.to_json
+    else
+      render json: attendee.errors.to_json
+    end
+  end
+
+  def decline
+    event = Event.find(params[:id])
+    attendee = Attendee.find_by(event: event, user: current_user)
+    attendee.destroy
 
     render json: event.to_json
   end

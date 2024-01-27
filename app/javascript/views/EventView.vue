@@ -97,11 +97,20 @@ export default {
   },
   async created() {
     if (this.eventId) {
-      const event = await getEvent(this.eventId);
-      this.event = {
-        ...event,
-        start_time: formatTime(new Date(event.start_time).toLocaleDateString()),
-      };
+      try {
+        const event = await getEvent(this.eventId);
+        this.event = {
+          ...event,
+          start_time: formatTime(new Date(event.start_time).toLocaleDateString()),
+        };
+      } catch {
+        this.$toast.add({
+          severity: 'danger',
+          summary: 'Error',
+          detail: 'Could not load event.',
+          life: 3000,
+        });
+      }
     }
   },
   computed: {
@@ -130,7 +139,6 @@ export default {
 
 <style lang="scss" scoped>
 .edit-event-card {
-  margin-top: 1em;
   padding: 0 1em 1em;
 }
 

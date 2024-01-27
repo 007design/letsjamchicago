@@ -4,7 +4,8 @@
 
 ### TODO
 - Format time on edit view
+- Tooltips
+- Clone event
 - Attend / Decline event
-- Your events table and endpoint
 - Account settings
 - Help

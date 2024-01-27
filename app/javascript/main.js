@@ -29,11 +29,15 @@ import Dialog from 'primevue/dialog';
 import Divider from 'primevue/divider';
 import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
+import Menu from 'primevue/menu';
+import Message from 'primevue/message';
 import Panel from 'primevue/panel';
 import Tag from 'primevue/tag';
+import Toast from 'primevue/toast';
 import Tooltip from 'primevue/tooltip';
 
 import ConfirmationService from 'primevue/confirmationservice';
+import ToastService from 'primevue/toastservice';
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
@@ -47,6 +51,7 @@ export default () => {
     app.use(router);
     app.use(PrimeVue);
     app.use(ConfirmationService);
+    app.use(ToastService);
 
     app.component('Badge', Badge);
     app.component('Button', Button);
@@ -60,8 +65,11 @@ export default () => {
     app.component('Divider', Divider);
     app.component('Dropdown', Dropdown);
     app.component('InputText', InputText);
+    app.component('Menu', Menu);
+    app.component('Message', Message);
     app.component('Panel', Panel);
     app.component('Tag', Tag);
+    app.component('Toast', Toast);
     app.directive('Tooltip', Tooltip);
 
     app.mount('#app');

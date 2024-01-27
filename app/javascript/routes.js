@@ -50,6 +50,12 @@ export const routes = [
         beforeEnter: requireAuth,
         component: () => import('@/views/UserEventsView.vue'),
       },
+      {
+        path: '/attending',
+        name: 'AttendingEvents',
+        beforeEnter: requireAuth,
+        component: () => import('@/views/AttendingEvents.vue'),
+      },
     ],
   },
   {

@@ -9,6 +9,14 @@
         <label for="password" class="text-sm">Password</label>
         <InputText id="password" type="password" v-model="user.password" />
       </div>
+      <Message
+        v-if="alert"
+        :severity="alert.type"
+        class="alert-message"
+        @close="alert = null"
+      >
+        {{ alert.message }}
+      </Message>
     </template>
     <template #footer>
       <div class="footer-buttons">
@@ -32,6 +40,7 @@ export default {
   data() {
     return {
       user: {},
+      alert: null,
     };
   },
   computed: {
@@ -43,11 +52,14 @@ export default {
   methods: {
     async doLogin() {
       try {
-        const user = await signIn(this.user);
+        const { user } = await signIn(this.user);
         setSignedIn(user);
         this.$router.push({ name: 'Home' });
       } catch (error) {
-        console.log(error.message);
+        this.alert = {
+          message: 'Could not sign you in. Please verify your email address and password and try again.',
+          type: 'error',
+        };
       }
     },
   },
@@ -56,7 +68,7 @@ export default {
 
 <style lang="scss" scoped>
 .signin-card {
-  max-width: 480px;
+  max-width: 320px;
   margin-top: 1em;
   align-self: center;
 
@@ -69,10 +81,17 @@ export default {
 .terms-message {
   margin-top: 1em;
   font-size: 12px;
+  white-space: nowrap;
 
   button {
     padding: 0;
     margin: 0;
+  }
+}
+
+.alert-message {
+  :deep(.p-message-text) {
+    font-size: 12px;
   }
 }
 

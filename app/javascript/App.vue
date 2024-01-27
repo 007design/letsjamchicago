@@ -41,9 +41,10 @@ export default {
     if (getCookie(`${cookieNameSpace}-auth`)) {
       try {
         const user = await getUser();
+
         setSignedIn(user);
       } catch {
-        // document.location.href = '/';
+        // do nothing
       }
     }
   },

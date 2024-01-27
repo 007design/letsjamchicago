@@ -43,13 +43,13 @@
       </template>
     </Column>
     <Column class="button-column" v-if="isCurrentEvents">
-      <template #body>
+      <template #body="slotProps">
         <Button label="Edit" class="edit-button" />
         <Button
           label="Delete"
           severity="danger"
           class="delete-button"
-          @click="deleteEvent(event)"
+          @click="() => $emit('deleteEvent', slotProps.data)"
         />
       </template>
     </Column>

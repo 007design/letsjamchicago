@@ -14,6 +14,10 @@ export async function getEvents({ neighborhood = '', user = null }) {
   return doGet(`api/v1/events?${neighborhood ? `n=${neighborhood}` : ''}${user ? `u=${user.id}` : ''}`);
 }
 
+export async function getAttendingEvents({ user }) {
+  return doGet(`api/v1/users/${user.id}/attending`);
+}
+
 export async function getEvent(id) {
   return doGet(`api/v1/events/${id}`);
 }
@@ -28,4 +32,12 @@ export async function updateEvent(event) {
 
 export async function deleteEvent(event) {
   return doDelete(`api/v1/events/${event.id}`);
+}
+
+export async function joinEvent(event) {
+  return doGet(`api/v1/events/${event.id}/attend`);
+}
+
+export async function leaveEvent(event) {
+  return doDelete(`api/v1/events/${event.id}/decline`);
 }

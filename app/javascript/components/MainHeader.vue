@@ -13,20 +13,33 @@
         </Button>
       </div>
       <div class="header-buttons">
-        <Button
-          v-if="authenticated"
-          label="Sign out"
-          :size="mqMobile ? 'small': ''"
-          @click="signOut"
-        />
+        <template v-if="authenticated">
+          <Button
+            class="create-event-button"
+            label="Create an event"
+            :size="mqMobile ? 'small': ''"
+            @click="() => $router.push({ name: 'NewEvent' })"
+          />
+          <Button
+            class="menu-button"
+            :size="mqMobile ? 'small': ''"
+            icon="pi pi-bars"
+            aria-haspopup="true"
+            aria-controls="overlay_menu"
+            @click="toggle"
+          />
+          <Menu ref="menu" id="overlay_menu" :model="menuItems" :popup="true" />
+        </template>
         <template v-else>
           <Button
+            class="sign-up-button"
             label="Sign up"
             link
             :size="mqMobile ? 'small': ''"
             @click="() => $router.push({ name: 'SignUp' })"
           />
           <Button
+            class="sign-in-button"
             label="Sign in"
             :size="mqMobile ? 'small': ''"
             @click="() => $router.push({ name: 'SignIn' })"
@@ -46,6 +59,42 @@ import { signOut } from '../services/auth';
 export default {
   name: 'MainHeader',
   mixins: [mq],
+  data() {
+    return {
+      menuItems: [
+        {
+          label: 'Create an event',
+          command: () => {
+            this.$router.push({ name: 'NewEvent' });
+          },
+        },
+        {
+          label: 'Attending events',
+          command: () => {
+            this.$router.push({ name: 'AttendingEvents' });
+          },
+        },
+        {
+          label: 'Created events',
+          command: () => {
+            this.$router.push({ name: 'MyEvents' });
+          },
+        },
+        {
+          label: 'Account settings',
+          command: () => {
+            this.$router.push({ name: 'NewEvent' });
+          },
+        },
+        {
+          label: 'Sign out',
+          command: () => {
+            this.signOut();
+          },
+        },
+      ],
+    };
+  },
   computed: {
     ...mapState(useAuthStore, ['user']),
     authenticated() {
@@ -53,9 +102,15 @@ export default {
     },
   },
   methods: {
+    toggle(event) {
+      this.$refs.menu.toggle(event);
+    },
     async signOut() {
-      await signOut();
-      document.location.href = '/';
+      try {
+        await signOut();
+      } finally {
+        document.location.href = '/';
+      }
     },
   },
 };
@@ -88,6 +143,22 @@ export default {
 
   .header-buttons {
     margin-right: 1em;
+
+    .mobile & {
+      margin-right: .5em;
+    }
+  }
+}
+
+.menu-button {
+  background: transparent;
+  border: none;
+  color: #44B6E5;
+  margin-left: .5em;
+  font-size: 20px;
+
+  :deep(.p-button-icon) {
+    font-size: 20px;
   }
 }
 
@@ -97,6 +168,7 @@ export default {
   padding: 0;
   font-size: 30px;
   font-weight: 600;
+  color: #44B6E5;
 
   .mobile & {
     font-size: 18px;
@@ -113,14 +185,15 @@ export default {
   }
 }
 
-.p-button.p-button-link {
-  color: #44B6E5;
-  background: transparent;
-}
-
-.p-button {
+.create-event-button,
+.sign-in-button {
   background: #44B6E5;
   border-color: #44B6E5;
+}
+
+.sign-up-button {
+  color: #44B6E5;
+  margin-right: .5em;
 }
 
 .p-button-sm {

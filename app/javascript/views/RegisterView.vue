@@ -17,6 +17,14 @@
         <label for="confirmPassword" class="text-sm">Retype Password</label>
         <InputText id="confirmPassword" type="password" v-model="confirmPassword" />
       </div>
+      <Message
+        v-if="alert"
+        :severity="alert.type"
+        class="alert-message"
+        @close="alert = null"
+      >
+        {{ alert.message }}
+      </Message>
     </template>
     <template #footer>
       <div class="footer-buttons">
@@ -40,6 +48,7 @@ export default {
     return {
       user: {},
       confirmPassword: '',
+      alert: null,
     };
   },
   computed: {
@@ -53,10 +62,17 @@ export default {
   },
   methods: {
     async doLogin() {
-      const user = await signUp(this.user);
+      try {
+        const user = await signUp(this.user);
 
-      setSignedIn(user);
-      document.location.href = '/';
+        setSignedIn(user);
+        document.location.href = '/';
+      } catch {
+        this.alert = {
+          message: 'Could not sign you up. Please verify your email address and password and try again.',
+          type: 'error',
+        };
+      }
     },
   },
 };
@@ -64,13 +80,19 @@ export default {
 
 <style lang="scss" scoped>
 .register-card {
-  max-width: 480px;
+  max-width: 320px;
   margin-top: 1em;
   align-self: center;
 
   .footer-buttons {
     display: flex;
     justify-content: right;
+  }
+}
+
+.alert-message {
+  :deep(.p-message-text) {
+    font-size: 12px;
   }
 }
 
