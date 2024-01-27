@@ -9,6 +9,11 @@
     :event="event"
     @filter="filterBy"
   />
+  <Card v-if="!events.length" class="empty-card">
+    <template #content>
+      We couldn't find any events. Try selecting a different neighborhood.
+    </template>
+  </Card>
 </template>
 
 <script>
@@ -73,5 +78,18 @@ h2 {
   display: flex;
   justify-content: space-between;
   margin: 1em 0;
+
+  .mobile & {
+    flex-direction: column;
+    margin: 0;
+
+    h2 {
+      margin-bottom: .5em;
+    }
+  }
+}
+
+.empty-card {
+  text-align: center;
 }
 </style>

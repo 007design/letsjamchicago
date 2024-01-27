@@ -1,4 +1,5 @@
 import {
+  doDelete,
   doGet,
   doPatch,
   doPost,
@@ -9,8 +10,8 @@ import {
  *
  * @returns {Promise}
  */
-export async function getEvents({ neighborhood = '' }) {
-  return doGet(`api/v1/events?${neighborhood ? `neighborhood=${neighborhood}` : ''}`);
+export async function getEvents({ neighborhood = '', user = null }) {
+  return doGet(`api/v1/events?${neighborhood ? `n=${neighborhood}` : ''}${user ? `u=${user.id}` : ''}`);
 }
 
 export async function getEvent(id) {
@@ -23,4 +24,8 @@ export async function newEvent(event) {
 
 export async function updateEvent(event) {
   return doPatch(`api/v1/events/${event.id}`, { event });
+}
+
+export async function deleteEvent(event) {
+  return doDelete(`api/v1/events/${event.id}`);
 }

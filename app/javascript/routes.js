@@ -44,6 +44,12 @@ export const routes = [
         component: () => import('@/views/EventView.vue'),
         props: true,
       },
+      {
+        path: '/events',
+        name: 'MyEvents',
+        beforeEnter: requireAuth,
+        component: () => import('@/views/UserEventsView.vue'),
+      },
     ],
   },
   {

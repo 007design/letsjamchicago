@@ -1,7 +1,7 @@
 <template>
   <div :class="['main', { mobile: isMobile }]">
     <MainHeader />
-    <RouterView />
+    <RouterView :key="$route.fullPath" />
     <TermsModal v-model:visible="isTermsDialogVisible" />
   </div>
 </template>

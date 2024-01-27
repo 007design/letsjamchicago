@@ -1,5 +1,5 @@
 <template>
-  <Card>
+  <Card class="event-card">
     <template #header>
       <div class="event-card-header">
         <div class="event-card-location">
@@ -16,9 +16,9 @@
           <div v-if="!mqMobile" class="add-to-calendar">
             <Button link label="Add to calendar" />
           </div>
-        </div>
-        <div v-if="mqMobile">
-          <strong>{{ event.location }}</strong>
+          <div v-if="mqMobile">
+            <strong>{{ event.location }}</strong>
+          </div>
         </div>
       </div>
     </template>
@@ -38,9 +38,8 @@
             </div>
             <iframe
               v-if="event.map"
-              :width="mqMobile ? 768 : 200"
+              :width="mqMobile ? '100%' : 200"
               height="200"
-              style="border:0"
               loading="lazy"
               allowfullscreen
               referrerpolicy="no-referrer-when-downgrade"
@@ -50,7 +49,12 @@
         </div>
       </div>
     </template>
-    <template #footer v-if="!isPreview">
+    <template #footer v-if="isPreview">
+      <div class="event-card-footer">
+        <slot name="footer" />
+      </div>
+    </template>
+    <template #footer v-else>
       <div class="event-card-footer">
         <template v-if="!authenticated">
           <Button
@@ -134,8 +138,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.event-card {
+  margin: .5em 0;
+}
+
 h3 {
   margin: 0;
+}
+
+iframe {
+  border: 1px solid #e2e8f0;
+
+  .mobile & {
+    margin-top: 1em;
+  }
 }
 
 .event-card-header {
@@ -199,10 +215,6 @@ h3 {
   padding: 1em;
 }
 
-:deep(.p-panel-content) {
-  display: flex;
-}
-
 .p-button.p-button-link {
   color: #44B6E5;
   background: transparent;
@@ -216,5 +228,17 @@ h3 {
 .p-button-sm {
   padding: .4em .5em;
   font-size: 14px;
+}
+</style>
+
+<style lang="scss">
+.event-card {
+  .p-panel-content {
+    display: flex;
+
+    .mobile & {
+      flex-direction: column;
+    }
+  }
 }
 </style>

@@ -8,6 +8,7 @@ export const formatDate = (dateString) => {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
+      timeZone: 'America/Chicago',
     });
   } catch {
     return 'Invalid date';

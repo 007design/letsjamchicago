@@ -36,6 +36,10 @@ export default {
 
   &.auth {
     padding: 3em 1em 1em;
+
+    .mobile & {
+      padding: 2em 1em 1em;
+    }
   }
 }
 .main-content {

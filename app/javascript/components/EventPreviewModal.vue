@@ -12,10 +12,15 @@
       :event="event"
       is-preview
     />
+    <template #footer>
+      <Button label="Go back" link @click="isDialogVisible = false" />
+      <Button label="Save event" @click="doSave" />
+    </template>
   </Dialog>
 </template>
 
 <script>
+import { newEvent, updateEvent } from '@/services/events';
 import EventCard from './EventCard.vue';
 
 export default {
@@ -47,6 +52,14 @@ export default {
     onCloseDialog() {
       this.$emit('update:visible', false);
     },
+    async doSave() {
+      if (this.event.id) {
+        await updateEvent(this.event);
+      } else {
+        await newEvent(this.event);
+      }
+      document.location.href = '/';
+    },
   },
 };
 </script>
@@ -54,5 +67,25 @@ export default {
 <style lang="scss">
 .event-preview-dialog {
   max-width: 768px;
+
+  .p-dialog-content {
+    padding: 0;
+  }
+
+  .p-dialog-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: .75em 1.5em 1em;
+
+    button {
+      background: #44B6E5;
+      border-color: #44B6E5;
+    }
+  }
+
+  .p-button.p-button-link {
+    color: #44B6E5;
+    background: transparent;
+  }
 }
 </style>

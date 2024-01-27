@@ -1,7 +1,7 @@
 <template>
-  <Card class="new-event-card">
+  <Card class="edit-event-card">
     <template #header>
-      <h3>Create an Event</h3>
+      <h3>{{ event.id ? 'Edit your' : 'Create an' }} event</h3>
     </template>
     <template #content>
       <div class="flex flex-column gap-1 mb-2">
@@ -38,7 +38,7 @@
         </label>
         <InputText id="map" type="text" v-model="event.map" />
       </div>
-      <div class="flex flex-row gap-3 mb-2">
+      <div :class="['flex gap-3 mb-2', mqMobile ? 'flex-column' : 'flex-row']">
         <div class="event-date">
           <label for="date" class="text-sm">Event date</label>
           <Calendar
@@ -54,16 +54,15 @@
             id="time"
             v-model="event.start_time"
             timeOnly
-            date-format="H:mm"
             hour-format="12"
           />
+          {{ event.start_time }}
         </div>
       </div>
     </template>
     <template #footer>
       <div class="footer-buttons">
         <Button label="Preview" @click="doPreview" :disabled="!isFormValid" />
-        <Button label="Save event" @click="doSave" :disabled="!isFormValid" />
       </div>
     </template>
   </Card>
@@ -71,13 +70,15 @@
 </template>
 
 <script>
-import { getEvent, newEvent, updateEvent } from '@/services/events';
+import { getEvent } from '@/services/events';
 import NeighborhoodDropdown from '@/components/NeighborhoodDropdown.vue';
-import { extractMapPlace } from '@/utils/common';
+import { extractMapPlace, formatTime } from '@/utils/common';
 import EventPreviewModal from '@/components/EventPreviewModal.vue';
+import mq from '@/utils/mq';
 
 export default {
   name: 'NewEventView',
+  mixins: [mq],
   components: {
     EventPreviewModal,
     NeighborhoodDropdown,
@@ -96,8 +97,11 @@ export default {
   },
   async created() {
     if (this.eventId) {
-      const e = await getEvent(this.eventId);
-      this.event = e;
+      const event = await getEvent(this.eventId);
+      this.event = {
+        ...event,
+        start_time: formatTime(new Date(event.start_time).toLocaleDateString()),
+      };
     }
   },
   computed: {
@@ -120,27 +124,19 @@ export default {
     async doPreview() {
       this.showPreview = true;
     },
-    async doSave() {
-      if (this.event.id) {
-        await updateEvent(this.newEvent);
-      } else {
-        await newEvent(this.newEvent);
-      }
-      document.location.href = '/';
-    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.new-event-card {
+.edit-event-card {
   margin-top: 1em;
-  padding: 0 1em;
+  padding: 0 1em 1em;
 }
 
 .footer-buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: right;
 }
 
 .event-date,
@@ -148,6 +144,10 @@ export default {
   display: flex;
   flex-direction: column;
   flex: 1 0 auto;
+}
+
+:deep(.p-card-body) {
+  padding: 0;
 }
 
 .p-button.p-button-link {

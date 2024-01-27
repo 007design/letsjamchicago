@@ -11,7 +11,11 @@
         </Button>
       </li>
       <li>
-        <Button link size="small">
+        <Button
+          link
+          size="small"
+          @click="() => $router.push({ name: 'MyEvents' })"
+        >
           Your Events
         </Button>
       </li>

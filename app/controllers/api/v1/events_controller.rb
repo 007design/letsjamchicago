@@ -4,9 +4,22 @@ class Api::V1::EventsController < ApplicationController
   # GET /v1/events
   def index
     user_id = current_user ? current_user.id : 0
-    # TODO Sort by neighborhood
-    events = Event.left_outer_joins(:attendees).select("events.*, COUNT(attendees.id) as attendee_count, CAST(CASE WHEN events.user_id = #{user_id} THEN true ELSE false END AS BOOLEAN) as owned").where('start_date >= ?', DateTime.now).group('events.id')
-    render json: events.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date', 'start_time', 'attendee_count', 'owned'])
+    
+    if (params[:u].present? && params[:u] != user_id.to_s)
+      render json: { 
+        status: 401,
+        error: 'You cannot view other users events.',
+      }, status: :unauthorized
+    else
+      events = Event.left_outer_joins(:attendees)
+        .select("events.*, COUNT(attendees.id) as attendee_count, CAST(CASE WHEN events.user_id = #{user_id} THEN true ELSE false END AS BOOLEAN) as owned")
+      events = events.where('start_date >= ?', DateTime.now) if params[:u].nil?
+      events = events.where('events.user_id = ?', params[:u]) if params[:u].present? && user_id.to_s == params[:u]
+      events = events.where('neighborhood = ?', params[:n]) if params[:n].present?
+      events = events.group('events.id')
+      events = events.order('events.start_time, events.start_date')
+      render json: events.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date', 'start_time', 'attendee_count', 'owned'])
+    end
   end
 
   # POST /v1/events
@@ -32,7 +45,6 @@ class Api::V1::EventsController < ApplicationController
         error: 'You do not own this event.',
       }, status: :unauthorized
     end
-
   end
 
   # PATCH /v1/events/:id
