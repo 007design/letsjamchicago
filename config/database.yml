@@ -80,6 +80,7 @@ test:
 production:
   <<: *default
   # database: letsjam_production
+  url: postgres://letsjam:dcA1Uyb1LgD682FphvN3OEAlcT0vOur3@dpg-cmrb76ol5elc73aifv10-a/letsjam
   database: letsjam
   username: letsjam
   password: <%= ENV["LETSJAM_DATABASE_PASSWORD"] %>
