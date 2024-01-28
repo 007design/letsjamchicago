@@ -19,8 +19,8 @@ FROM base as build
 # Install packages needed to build gems
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl build-essential git libpq-dev libvips pkg-config && \
-    curl -fsSL https://deb.nodesource.com/setup_21.x | sudo -E bash - &&\
-    apt-get install -y nodejs npm
+    curl -fsSL https://deb.nodesource.com/setup_21.x | bash - &&\
+    apt-get install -y nodejs
 
 COPY package.json yarn.lock ./
 RUN npm install -g yarn
