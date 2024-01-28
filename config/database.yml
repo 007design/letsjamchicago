@@ -79,6 +79,7 @@ test:
 #
 production:
   <<: *default
-  database: letsjam_production
+  # database: letsjam_production
+  database: letsjam
   username: letsjam
   password: <%= ENV["LETSJAM_DATABASE_PASSWORD"] %>
