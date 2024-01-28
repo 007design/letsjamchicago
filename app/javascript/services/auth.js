@@ -2,6 +2,7 @@ import {
   doGet,
   doDelete,
   doPost,
+  doPatch,
 } from '@/utils/api';
 import { deleteCookie } from '@/utils/cookies';
 import { useAuthStore } from '@/stores/auth';
@@ -60,4 +61,13 @@ export function signUp(user) {
  */
 export async function getUser() {
   return doGet('api/v1/users');
+}
+
+/**
+ * Updates a user
+ *
+ * @returns {Promise}
+ */
+export async function updateUser(user) {
+  return doPatch('api/v1/users', { user });
 }

@@ -1,7 +1,9 @@
 <template>
   <Card class="edit-event-card">
     <template #header>
-      <h3>{{ event.id ? 'Edit your' : 'Create an' }} event</h3>
+      <h3>
+        {{ clone ? 'Clone an event' : event.id ? 'Edit your event' : 'Create an event' }}
+      </h3>
     </template>
     <template #content>
       <div class="flex flex-column gap-1 mb-2">
@@ -47,6 +49,7 @@
             inline
             :min-date="new Date()"
           />
+          {{ event.start_date }}
         </div>
         <div class="event-time">
           <label for="time" class="text-sm">Start time</label>
@@ -54,6 +57,7 @@
             id="time"
             v-model="event.start_time"
             timeOnly
+            inline
             hour-format="12"
           />
           {{ event.start_time }}
@@ -72,7 +76,7 @@
 <script>
 import { getEvent } from '@/services/events';
 import NeighborhoodDropdown from '@/components/NeighborhoodDropdown.vue';
-import { extractMapPlace, formatTime } from '@/utils/common';
+import { extractMapPlace } from '@/utils/common';
 import EventPreviewModal from '@/components/EventPreviewModal.vue';
 import mq from '@/utils/mq';
 
@@ -89,21 +93,28 @@ export default {
       default: null,
     },
   },
-  data() {
+  data(vm) {
     return {
       event: {},
       showPreview: false,
+      clone: vm.$route.query.clone,
     };
   },
   async created() {
     if (this.eventId) {
       try {
         const event = await getEvent(this.eventId);
-        this.event = {
-          ...event,
-          start_time: formatTime(new Date(event.start_time).toLocaleDateString()),
-        };
-      } catch {
+        if (this.clone) {
+          // eslint-disable-next-line camelcase
+          const { start_time, start_date, ...clonedEvent } = event;
+          this.event = clonedEvent;
+        } else {
+          this.event = {
+            ...event,
+          };
+        }
+      } catch (err) {
+        console.log(err);
         this.$toast.add({
           severity: 'danger',
           summary: 'Error',
@@ -156,6 +167,11 @@ export default {
 
 :deep(.p-card-body) {
   padding: 0;
+}
+.event-date {
+  :deep(.p-datepicker table td.p-datepicker-today > span) {
+    background-color: transparent;
+  }
 }
 
 .p-button.p-button-link {

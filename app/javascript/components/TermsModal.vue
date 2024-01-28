@@ -15,6 +15,7 @@
 <script>
 export default {
   name: 'TermsModal',
+  emits: ['update:visible'],
   props: {
     visible: {
       type: Boolean,

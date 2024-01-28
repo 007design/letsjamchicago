@@ -28,7 +28,10 @@ export function getCookie(name) {
  * @param {string} name - Name of the cookie to delete.
  */
 export function deleteCookie(name) {
+  // const domain = import.meta.env.VITE_DOMAIN;
   document.cookie = `${name}=; path=/; SameSite=Strict; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+  // document.cookie =
+  // `${name}=; path=/; Domain=${domain}; SameSite=Strict; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
 }
 
 /**
@@ -43,7 +46,11 @@ export function setCookie(
   value,
   expirationDate = new Date(new Date().getTime() + (24 * 60 * 60 * 1000)),
 ) {
+  // const domain = import.meta.env.VITE_DOMAIN;
   const cookie = `${name}=${value}; SameSite=Strict; expires=${expirationDate.toUTCString()}; path=/; secure;`;
+  // const cookie =
+  // `${name}=${value}; Domain=${domain}; SameSite=Strict;
+  // expires=${expirationDate.toUTCString()}; path=/; secure;`;
 
   document.cookie = cookie;
 }

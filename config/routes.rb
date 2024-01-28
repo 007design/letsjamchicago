@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     post 'signup', to: 'users/registrations#create'
     post 'signin', to: 'users/sessions#create', as: :user_session
     delete 'signout', to: 'users/sessions#destroy'
+    patch 'api/v1/users', to: 'users/registrations#update'
   end
   devise_for :users, skip: :all
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

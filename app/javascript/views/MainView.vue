@@ -1,7 +1,7 @@
 <template>
   <div :class="['main-container', { auth: authenticated }]">
     <div class="main-content">
-      <RouterView />
+      <RouterView :key="$route.fullPath" />
     </div>
   </div>
 </template>

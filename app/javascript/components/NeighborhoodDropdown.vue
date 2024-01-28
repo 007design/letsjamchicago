@@ -10,6 +10,7 @@
 <script>
 export default {
   name: 'NeighborhoodDropdown',
+  emits: ['update:value'],
   props: {
     value: {
       type: String,
@@ -54,7 +55,7 @@ export default {
         'Budlong Woods',
         'Buena Park',
         'Burnside',
-        'Cabrini–Green',
+        'Cabrini-Green',
         'Calumet Heights',
         'Canaryville',
         'Central Station',

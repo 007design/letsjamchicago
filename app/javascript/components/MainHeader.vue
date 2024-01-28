@@ -18,7 +18,7 @@
             class="create-event-button"
             label="Create an event"
             :size="mqMobile ? 'small': ''"
-            @click="() => $router.push({ name: 'NewEvent' })"
+            @click="() => $router.push('/new')"
           />
           <Button
             class="menu-button"
@@ -83,7 +83,13 @@ export default {
         {
           label: 'Account settings',
           command: () => {
-            this.$router.push({ name: 'NewEvent' });
+            this.$router.push({ name: 'AccountSettings' });
+          },
+        },
+        {
+          label: 'About',
+          command: () => {
+            this.$router.push({ name: 'About' });
           },
         },
         {
@@ -121,11 +127,15 @@ export default {
   position: sticky;
   top: 0;
   z-index: 2;
-  padding: 0 0 0 1em;
+  padding-left: 1em;
   background: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
   display: flex;
   justify-content: center;
+
+  .mobile & {
+    padding-left: .5em;
+  }
 
   .header-content {
     width: 100%;
@@ -145,7 +155,7 @@ export default {
     margin-right: 1em;
 
     .mobile & {
-      margin-right: .5em;
+      margin-right: 0;
     }
   }
 }

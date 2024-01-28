@@ -44,12 +44,25 @@
     </Column>
     <Column class="button-column" v-if="isCurrentEvents">
       <template #body="slotProps">
-        <Button label="Edit" class="edit-button" />
+        <Button
+          label="Edit"
+          class="edit-button"
+          @click="() => $emit('editEvent', slotProps.data)"
+        />
         <Button
           label="Delete"
           severity="danger"
           class="delete-button"
           @click="() => $emit('deleteEvent', slotProps.data)"
+        />
+      </template>
+    </Column>
+    <Column class="button-column" v-else>
+      <template #body="slotProps">
+        <Button
+          label="Clone event"
+          class="edit-button"
+          @click="() => $emit('cloneEvent', slotProps.data)"
         />
       </template>
     </Column>
@@ -61,20 +74,30 @@
     :event="event"
     is-preview
   >
-    <template #footer v-if="isCurrentEvents">
-      <Button
-        class="edit-button"
-        :size="mqMobile ? 'small': ''"
-        label="Edit event"
-        @click="() => $emit('editEvent', event)"
-      />
-      <Button
-        class="delete-button"
-        :size="mqMobile ? 'small': ''"
-        label="Delete event"
-        severity="danger"
-        @click="() => $emit('deleteEvent', event)"
-      />
+    <template #footer>
+      <template v-if="isCurrentEvents">
+        <Button
+          class="edit-button"
+          size="small"
+          label="Edit event"
+          @click="() => $emit('editEvent', event)"
+        />
+        <Button
+          class="delete-button"
+          size="small"
+          label="Delete event"
+          severity="danger"
+          @click="() => $emit('deleteEvent', event)"
+        />
+      </template>
+      <template v-else>
+        <Button
+          class="edit-button"
+          size="small"
+          label="Clone event"
+          @click="() => $emit('cloneEvent', event)"
+        />
+      </template>
     </template>
   </EventCard>
 </template>
@@ -87,6 +110,7 @@ import EventCard from './EventCard.vue';
 export default {
   name: 'EventsList',
   mixins: [mq],
+  emits: ['deleteEvent', 'editEvent'],
   components: {
     EventCard,
   },

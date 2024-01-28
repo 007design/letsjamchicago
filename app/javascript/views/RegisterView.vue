@@ -14,7 +14,7 @@
         <InputText id="password" type="password" v-model="user.password" />
       </div>
       <div class="flex flex-column gap-1 mb-2">
-        <label for="confirmPassword" class="text-sm">Retype Password</label>
+        <label for="confirmPassword" class="text-sm">Retype password</label>
         <InputText id="confirmPassword" type="password" v-model="confirmPassword" />
       </div>
       <Message

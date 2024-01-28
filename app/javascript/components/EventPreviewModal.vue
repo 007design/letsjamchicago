@@ -26,6 +26,7 @@ import EventCard from './EventCard.vue';
 
 export default {
   name: 'EventPreviewModal',
+  emits: ['update:visible'],
   components: {
     EventCard,
   },

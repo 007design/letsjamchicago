@@ -112,6 +112,7 @@ export default {
   name: 'EventCard',
   mixins: [mq],
   inject: ['loadEvents'],
+  emits: ['filter', 'decline'],
   props: {
     event: {
       type: Object,

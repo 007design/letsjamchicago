@@ -20,6 +20,7 @@
       :events="pastEvents"
       @editEvent="editEvent"
       @deleteEvent="deleteEvent"
+      @cloneEvent="cloneEvent"
     />
   </template>
   <ConfirmDialog></ConfirmDialog>
@@ -71,6 +72,9 @@ export default {
     },
     editEvent(event) {
       this.$router.push({ name: 'EditEvent', params: { eventId: event.id } });
+    },
+    cloneEvent(event) {
+      this.$router.push({ name: 'CloneEvent', params: { eventId: event.id }, query: { clone: true } });
     },
     deleteEvent(event) {
       this.$confirm.require({
