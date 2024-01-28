@@ -19,10 +19,10 @@ FROM base as build
 # Install packages needed to build gems
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config && \
-    apt-get install -y nodejs && \
-    npm install -g yarn
+    apt-get install -y nodejs
 
 COPY package.json yarn.lock ./
+RUN npm install -g yarn
 RUN yarn install --check-files
 
 # Install application gems
