@@ -13,6 +13,14 @@
     </TabPanel>
     <TabPanel header="Help">
       <div class="help-tab">
+        <Message
+          v-if="alert"
+          :severity="alert.type"
+          class="alert-message"
+          @close="alert = null"
+        >
+          {{ alert.message }}
+        </Message>
         <Card class="contact-card">
           <template #header>
             <h3>Email me</h3>
@@ -62,14 +70,6 @@
           </template>
         </Card>
       </div>
-      <Message
-        v-if="alert"
-        :severity="alert.type"
-        class="alert-message"
-        @close="alert = null"
-      >
-        {{ alert.message }}
-      </Message>
     </TabPanel>
     <TabPanel header="Contribute">
       Buy me a beer
@@ -86,7 +86,10 @@ export default {
   name: 'AboutView',
   data() {
     return {
-      alert: null,
+      alert: {
+        type: 'success',
+        message: 'test',
+      },
       emailUser: {},
       message: '',
     };
@@ -100,18 +103,21 @@ export default {
     },
   },
   watch: {
-    user() {
-      if (this.user) {
-        this.emailUser.name = this.user.name;
-        this.emailUser.email = this.user.email;
-      }
+    user: {
+      handler() {
+        if (this.user) {
+          this.emailUser.name = this.user.name;
+          this.emailUser.email = this.user.email;
+        }
+      },
+      immediate: true,
     },
   },
   methods: {
     async sendEmail() {
       try {
         await sendContactEmail({
-          name: this.emailUser.name,
+          from: this.emailUser.name,
           email: this.emailUser.email,
           message: this.message,
         });
@@ -152,5 +158,9 @@ h3 {
 .p-button {
   background: #44B6E5;
   border-color: #44B6E5;
+}
+
+:deep(.p-message-text) {
+  flex: 1;
 }
 </style>
