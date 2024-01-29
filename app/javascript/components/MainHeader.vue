@@ -63,6 +63,12 @@ export default {
     return {
       menuItems: [
         {
+          label: 'Upcoming events',
+          command: () => {
+            this.$router.push({ name: 'Home' });
+          },
+        },
+        {
           label: 'Create an event',
           command: () => {
             this.$router.push({ name: 'NewEvent' });

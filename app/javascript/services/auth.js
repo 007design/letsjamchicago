@@ -71,3 +71,7 @@ export async function getUser() {
 export async function updateUser({ new_password: password }) {
   return doPatch('api/v1/users', { password });
 }
+
+export async function sendContactEmail(email) {
+  return doPost('contact', email);
+}

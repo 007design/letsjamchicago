@@ -16,7 +16,7 @@
         />
         <Button
           class="footer-button"
-          label="Help / About"
+          label="About / Help"
           link
           @click="() => $router.push({ name: 'About' })"
         />

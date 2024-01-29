@@ -36,6 +36,7 @@ import Panel from 'primevue/panel';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import Tag from 'primevue/tag';
+import Textarea from 'primevue/textarea';
 import Toast from 'primevue/toast';
 
 import ConfirmationService from 'primevue/confirmationservice';
@@ -74,6 +75,7 @@ export default () => {
     app.component('TabView', TabView);
     app.component('TabPanel', TabPanel);
     app.component('Tag', Tag);
+    app.component('Textarea', Textarea);
     app.component('Toast', Toast);
 
     app.mount('#app');

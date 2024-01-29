@@ -46,6 +46,7 @@ gem 'vite_rails'
 gem 'devise'
 gem 'devise-jwt'
 gem 'jsonapi-serializer'
+gem 'mailjet'
 
 gem 'rack-cors'
 
