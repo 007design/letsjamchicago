@@ -12,7 +12,7 @@
         </div>
         <div class="event-card-when">
           <i class="pi pi-calendar"></i>
-          {{ dateFormatter(event.start_date) }} @ {{ timeFormatter(event.start_time) }}
+          {{ dateFormatter(event.start_date) }} @ {{ timeFormatter(event.start_date) }}
           <div v-if="mqMobile">
             <strong>{{ event.location }}</strong>
           </div>

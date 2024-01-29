@@ -17,19 +17,9 @@
         {{ slotProps.data.description }}
       </template>
     </Column>
-    <Column header="Neighborhood" class="events-table-column">
-      <template #body="slotProps">
-        {{ slotProps.data.neighborhood }}
-      </template>
-    </Column>
     <Column header="Location" class="events-table-column">
       <template #body="slotProps">
         {{ slotProps.data.location }}
-      </template>
-    </Column>
-    <Column header="Google map" class="events-table-column">
-      <template #body="slotProps">
-        {{ slotProps.data.map }}
       </template>
     </Column>
     <Column header="Event date" class="events-table-column">
@@ -39,7 +29,7 @@
     </Column>
     <Column header="Start time" class="events-table-column">
       <template #body="slotProps">
-        {{ formatTime(slotProps.data.start_time) }}
+        {{ formatTime(slotProps.data.start_date) }}
       </template>
     </Column>
     <Column class="button-column" v-if="isCurrentEvents">
@@ -163,7 +153,7 @@ export default {
 
 :deep(th.events-table-column) {
   font-size: 14px;
-  max-width: calc(100% / 8);
+  max-width: calc(100% / 6);
   white-space: nowrap;
 }
 

@@ -68,6 +68,6 @@ export async function getUser() {
  *
  * @returns {Promise}
  */
-export async function updateUser(user) {
-  return doPatch('api/v1/users', { user });
+export async function updateUser({ new_password: password }) {
+  return doPatch('api/v1/users', { password });
 }

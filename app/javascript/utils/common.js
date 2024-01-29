@@ -1,9 +1,6 @@
 export const formatDate = (dateString) => {
-  const timezoneOffset = new Date().getTimezoneOffset() / 60;
-  const timezoneString = `${timezoneOffset > 0 ? '-' : '+'}${(`0${timezoneOffset}`).slice(-2)}:00`;
-
   try {
-    return new Date(dateString.replace(/Z$/, timezoneString)).toLocaleDateString('en-us', {
+    return new Date(dateString).toLocaleDateString('en-us', {
       weekday: 'long',
       year: 'numeric',
       month: 'short',
@@ -16,11 +13,8 @@ export const formatDate = (dateString) => {
 };
 
 export const formatTime = (dateString) => {
-  const timezoneOffset = new Date().getTimezoneOffset() / 60;
-  const timezoneString = `${timezoneOffset > 0 ? '-' : '+'}${(`0${timezoneOffset}`).slice(-2)}:00`;
-
   try {
-    return new Date(dateString.replace(/Z$/, timezoneString)).toLocaleTimeString('en-us', { hour: 'numeric', minute: '2-digit' });
+    return new Date(dateString).toLocaleTimeString('en-us', { hour: 'numeric', minute: '2-digit' });
   } catch {
     return 'Invalid date';
   }

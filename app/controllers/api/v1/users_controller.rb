@@ -13,7 +13,7 @@ class Api::V1::UsersController < ApplicationController
     events = events.where('start_date >= ?', DateTime.now)
     events = events.where("EXISTS(SELECT * FROM attendees WHERE attendees.user_id = #{user_id} AND attendees.event_id = events.id)")
     events = events.group('events.id')
-    events = events.order('events.start_time, events.start_date DESC')
-    render json: events.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date', 'start_time', 'attendee_count', 'owned', 'attending'])
+    events = events.order('events.start_date DESC')
+    render json: events.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date', 'attendee_count', 'owned', 'attending'])
   end
 end

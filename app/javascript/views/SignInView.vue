@@ -25,7 +25,7 @@
       </div>
       <div class="terms-message">
         By using this site you agree to the
-        <Button label="Terms of Use" link @click="showTermsDialog()" />
+        <Button label="Terms of Use" link @click="showTermsDialog" />
       </div>
     </template>
   </Card>

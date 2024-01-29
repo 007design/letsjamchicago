@@ -31,10 +31,12 @@ import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Menu from 'primevue/menu';
 import Message from 'primevue/message';
+import OverlayPanel from 'primevue/overlaypanel';
 import Panel from 'primevue/panel';
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
 import Tag from 'primevue/tag';
 import Toast from 'primevue/toast';
-import Tooltip from 'primevue/tooltip';
 
 import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';
@@ -67,10 +69,12 @@ export default () => {
     app.component('InputText', InputText);
     app.component('Menu', Menu);
     app.component('Message', Message);
+    app.component('OverlayPanel', OverlayPanel);
     app.component('Panel', Panel);
+    app.component('TabView', TabView);
+    app.component('TabPanel', TabPanel);
     app.component('Tag', Tag);
     app.component('Toast', Toast);
-    app.directive('Tooltip', Tooltip);
 
     app.mount('#app');
   });

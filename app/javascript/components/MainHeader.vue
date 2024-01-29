@@ -8,7 +8,7 @@
           size="large"
           @click="() => $router.push({ name: 'Home' })"
         >
-          <img class="home-icon" src="/ljc-logo.svg" alt="letsjamchicago logo"/>
+          <img class="home-icon" src="/ljc-note-logo.svg" alt="letsjamchicago logo"/>
           Let's Jam Chicago
         </Button>
       </div>
@@ -81,13 +81,13 @@ export default {
           },
         },
         {
-          label: 'Account settings',
+          label: 'Change password',
           command: () => {
             this.$router.push({ name: 'AccountSettings' });
           },
         },
         {
-          label: 'About',
+          label: 'About / Help',
           command: () => {
             this.$router.push({ name: 'About' });
           },
@@ -127,15 +127,11 @@ export default {
   position: sticky;
   top: 0;
   z-index: 2;
-  padding-left: 1em;
-  background: white;
+  padding: 0 .5em 0 0;
+  background: #44B6E5;
   box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
   display: flex;
   justify-content: center;
-
-  .mobile & {
-    padding-left: .5em;
-  }
 
   .header-content {
     width: 100%;
@@ -152,18 +148,16 @@ export default {
   }
 
   .header-buttons {
-    margin-right: 1em;
-
-    .mobile & {
-      margin-right: 0;
-    }
+    display: flex;
+    flex: 1 0 auto;
+    justify-content: end;
   }
 }
 
 .menu-button {
   background: transparent;
   border: none;
-  color: #44B6E5;
+  color: white;
   margin-left: .5em;
   font-size: 20px;
 
@@ -173,12 +167,12 @@ export default {
 }
 
 .home-button {
-  display: block;
+  display: flex;
   margin: .25em 0;
   padding: 0;
   font-size: 30px;
   font-weight: 600;
-  color: #44B6E5;
+  color: white;
 
   .mobile & {
     font-size: 18px;
@@ -195,14 +189,20 @@ export default {
   }
 }
 
-.create-event-button,
+.create-event-button {
+  background: #EF4444;
+  border-color: #EF4444;
+  color: white;
+}
+
 .sign-in-button {
-  background: #44B6E5;
-  border-color: #44B6E5;
+  background: #EF4444;
+  border-color: #EF4444;
+  color: white;
 }
 
 .sign-up-button {
-  color: #44B6E5;
+  color: white;
   margin-right: .5em;
 }
 

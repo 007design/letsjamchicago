@@ -7,60 +7,79 @@
     </template>
     <template #content>
       <div class="flex flex-column gap-1 mb-2">
-        <label for="name" class="text-sm">Event name</label>
-        <InputText id="name" type="text" v-model="event.name" />
+        <label for="name" class="text-sm required">Event name</label>
+        <InputText id="name" type="text" v-model="event.name" required />
       </div>
       <div class="flex flex-column gap-1 mb-2">
-        <label for="description" class="text-sm">Event description</label>
-        <InputText id="description" type="text" v-model="event.description" />
+        <label for="description" class="text-sm required">Event description</label>
+        <InputText id="description" type="text" v-model="event.description" required />
       </div>
       <div class="flex flex-column gap-1 mb-2">
-        <label for="neighborhood" class="text-sm">
-          Neighborhood
+        <div class="input-header">
+          <label for="neighborhood" class="text-sm">
+            Neighborhood
+          </label>
           <Badge
             value="?"
             severity="info"
-            v-tooltip.bottom="'Select a neighborhood to help local musicians find your event'"
+            @click="toggleNeighborhoodTooltip"
           />
-        </label>
-        <NeighborhoodDropdown v-model="event.neighborhood" />
+        </div>
+        <NeighborhoodDropdown id="neighborhood" v-model="event.neighborhood" />
+        <OverlayPanel ref="neighborhoodTooltip">
+          Select a neighborhood to help local musicians find your event
+        </OverlayPanel>
       </div>
       <div class="flex flex-column gap-1 mb-2">
-        <label for="location" class="text-sm">Event location</label>
-        <InputText id="location" type="text" v-model="event.location" />
+        <label for="location" class="text-sm required">Event location</label>
+        <InputText id="location" type="text" v-model="event.location" required />
       </div>
       <div class="flex flex-column gap-1 mb-2">
-        <label for="map" class="text-sm">
-          Google map URL
+        <div class="input-header">
+          <label for="map" class="text-sm">
+            Google map URL
+          </label>
           <Badge
             value="?"
             severity="info"
-            v-tooltip.bottom="'Paste a URL from Google Maps'"
+            @click="toggleMapTooltip"
           />
-        </label>
+        </div>
         <InputText id="map" type="text" v-model="event.map" />
+        <OverlayPanel ref="mapTooltip">
+          Paste a URL from Google Maps
+        </OverlayPanel>
       </div>
       <div :class="['flex gap-3 mb-2', mqMobile ? 'flex-column' : 'flex-row']">
         <div class="event-date">
-          <label for="date" class="text-sm">Event date</label>
+          <label for="date" class="text-sm required">Event date</label>
           <Calendar
             id="date"
             v-model="event.start_date"
-            inline
+            date-format="DD MM d, yy"
             :min-date="new Date()"
           />
-          {{ event.start_date }}
         </div>
         <div class="event-time">
-          <label for="time" class="text-sm">Start time</label>
-          <Calendar
-            id="time"
-            v-model="event.start_time"
-            timeOnly
-            inline
-            hour-format="12"
-          />
-          {{ event.start_time }}
+          <label class="text-sm required">Start time</label>
+          <div class="time-fields">
+            <Dropdown
+              class="time-input hours-input"
+              v-model="hour"
+              :options="timeOptions.hours"
+            />
+            <Dropdown
+              class="time-input mins-input"
+              v-model="min"
+              :options="timeOptions.mins"
+            />
+            <Dropdown
+              class="time-input ampm-input"
+              v-model="ampm"
+              :options="timeOptions.ampm"
+            />
+          </div>
+          {{ event.start_date }}
         </div>
       </div>
     </template>
@@ -98,6 +117,35 @@ export default {
       event: {},
       showPreview: false,
       clone: vm.$route.query.clone,
+      hour: '12',
+      min: '00',
+      ampm: 'PM',
+      timeOptions: {
+        hours: [
+          '1',
+          '2',
+          '3',
+          '4',
+          '5',
+          '6',
+          '7',
+          '8',
+          '9',
+          '10',
+          '11',
+          '12',
+        ],
+        mins: [
+          '00',
+          '15',
+          '30',
+          '45',
+        ],
+        ampm: [
+          'PM',
+          'AM',
+        ],
+      },
     };
   },
   async created() {
@@ -106,15 +154,23 @@ export default {
         const event = await getEvent(this.eventId);
         if (this.clone) {
           // eslint-disable-next-line camelcase
-          const { start_time, start_date, ...clonedEvent } = event;
+          const { start_date, ...clonedEvent } = event;
           this.event = clonedEvent;
         } else {
           this.event = {
             ...event,
           };
+          let h = new Date(event.start_date).getHours();
+          let m = new Date(event.start_date).getMinutes();
+          const x = h >= 12 ? 'PM' : 'AM';
+          h %= 12;
+          h = h || 12;
+          m = m < 10 ? `0${m}` : m;
+          this.hour = h.toString();
+          this.min = m.toString();
+          this.ampm = x;
         }
       } catch (err) {
-        console.log(err);
         this.$toast.add({
           severity: 'danger',
           summary: 'Error',
@@ -125,24 +181,62 @@ export default {
     }
   },
   computed: {
+    timeHelper() {
+      // eslint-disable-next-line no-nested-ternary
+      return this.ampm === 'AM'
+        ? (parseInt(this.hour, 10) >= 12 ? 0 : parseInt(this.hour, 10))
+        : parseInt(this.hour, 10) === 12 ? 12 : parseInt(this.hour, 10) + 12;
+    },
     isFormValid() {
       return this.event.name
+        && this.event.description
         && this.event.location
-        && this.event.start_date
-        && this.event.start_time;
+        && this.event.start_date;
     },
     newEvent() {
       return {
         ...this.event,
-        start_date: this.event.start_date?.toString(),
-        start_time: this.event.start_time?.toString(),
+        // start_date: this.event.start_date?.toString(),
         map: this.event.map?.indexOf('google.com') > -1 ? extractMapPlace(this.event.map) : this.event.map || '',
       };
+    },
+  },
+  watch: {
+    hour() {
+      if (this.event.start_date) {
+        this.event.start_date.setHours(this.timeHelper);
+      }
+    },
+    min() {
+      if (this.event.start_date) {
+        this.event.start_date.setMinutes(this.min);
+      }
+    },
+    ampm() {
+      if (this.event.start_date) {
+        this.event.start_date.setHours(this.timeHelper);
+      }
+    },
+    'event.start_date': {
+      handler(newVal, oldVal) {
+        if (newVal !== oldVal) {
+          const d = new Date(this.event.start_date);
+          d.setHours(this.timeHelper);
+          d.setMinutes(this.min);
+          this.event.start_date = d;
+        }
+      },
     },
   },
   methods: {
     async doPreview() {
       this.showPreview = true;
+    },
+    toggleNeighborhoodTooltip(e) {
+      this.$refs.neighborhoodTooltip.toggle(e);
+    },
+    toggleMapTooltip(e) {
+      this.$refs.mapTooltip.toggle(e);
     },
   },
 };
@@ -151,6 +245,17 @@ export default {
 <style lang="scss" scoped>
 .edit-event-card {
   padding: 0 1em 1em;
+}
+
+.input-header {
+  .p-badge {
+    cursor: pointer;
+  }
+}
+
+.required::after {
+  content: '*';
+  color: red;
 }
 
 .footer-buttons {
@@ -163,6 +268,15 @@ export default {
   display: flex;
   flex-direction: column;
   flex: 1 0 auto;
+}
+
+.time-fields {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.time-input {
+  margin-right: .5em;
 }
 
 :deep(.p-card-body) {

@@ -3,6 +3,8 @@
     <MainHeader />
     <RouterView :key="$route.fullPath" />
     <TermsModal v-model:visible="isTermsDialogVisible" />
+    <PolicyModal v-model:visible="isPolicyDialogVisible" />
+    <MainFooter />
   </div>
 </template>
 
@@ -12,8 +14,10 @@ import { getUser, setSignedIn } from '@/services/auth';
 import { useEventsStore } from '@/stores/events';
 import MainHeader from '@/components/MainHeader.vue';
 import TermsModal from '@/components/TermsModal.vue';
+import PolicyModal from '@/components/PolicyModal.vue';
 import mq from '@/utils/mq';
 import { getCookie } from '@/utils/cookies';
+import MainFooter from '@/components/MainFooter.vue';
 
 const cookieNameSpace = import.meta.env.VITE_COOKIE_NAMESPACE;
 
@@ -21,17 +25,24 @@ export default {
   name: 'App',
   components: {
     MainHeader,
+    MainFooter,
     TermsModal,
+    PolicyModal,
   },
   mixins: [mq],
   provide() {
     return {
       showTermsDialog: this.showTermsDialog,
+      showPolicyDialog: this.showPolicyDialog,
     };
   },
   data() {
     return {
       isTermsDialogVisible: {
+        type: Boolean,
+        default: false,
+      },
+      isPolicyDialogVisible: {
         type: Boolean,
         default: false,
       },
@@ -58,6 +69,9 @@ export default {
     showTermsDialog() {
       this.isTermsDialogVisible = true;
     },
+    showPolicyDialog() {
+      this.isPolicyDialogVisible = true;
+    },
   },
 };
 </script>
@@ -82,5 +96,6 @@ body, html {
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding-bottom: 2em;
 }
 </style>

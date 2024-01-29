@@ -7,15 +7,15 @@
       <template #content>
         <div class="flex flex-column gap-1 mb-2">
           <label for="password" class="text-sm">Current password</label>
-          <InputText id="password" type="password" v-model="user.current_password" />
+          <InputText id="password" type="password" v-model="user.current_password" disabled />
         </div>
         <div class="flex flex-column gap-1 mb-2">
           <label for="password" class="text-sm">New password</label>
-          <InputText id="password" type="password" v-model="user.new_password" />
+          <InputText id="password" type="password" v-model="user.new_password" disabled />
         </div>
         <div class="flex flex-column gap-1 mb-2">
           <label for="confirmPassword" class="text-sm">Retype new password</label>
-          <InputText id="confirmPassword" type="password" v-model="confirmPassword" />
+          <InputText id="confirmPassword" type="password" v-model="confirmPassword" disabled />
         </div>
         <Message
           v-if="alert"
@@ -79,6 +79,10 @@ export default {
 .update-user-view {
   display: flex;
   justify-content: center;
+}
+
+h3 {
+  margin-left: 1em;
 }
 
 .update-user-card {
