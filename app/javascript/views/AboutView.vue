@@ -1,6 +1,21 @@
 <template>
   <TabView class="about-tabs">
     <TabPanel header="About">
+      <p>This site is, and will always be, free to use and ad-free.
+        I created it primarily to find other, local musicians for me to jam with
+        after failing to do so via Craigslist and Meetup and so forth.</p>
+      <p>Please be respectful and polite. Don't try and post some hateful nonsense,
+        I'll just remove it and ban you. If your event is at a bar or something where kids
+        aren't allowed, please note that in the description. If you want to exclude people
+        for any other reason, go somewhere else.</p>
+      <p><strong>Don't be that guy/gal!</strong></p>
+      <p>I'll never sell or disclose your information, email address, etc.
+        I'm not out to make a dime, I just want to help musicians find each other so we can
+        all become better, happier musicians. If you feel like contributing, the project is
+        open source and on Github. Check out the Contribute tab above.</p>
+
+      <Divider />
+
       This is obviously not done. Still to do:
       <ul>
         <li>Terms and Privacy Policy</li>
@@ -86,10 +101,7 @@ export default {
   name: 'AboutView',
   data() {
     return {
-      alert: {
-        type: 'success',
-        message: 'test',
-      },
+      alert: null,
       emailUser: {},
       message: '',
     };
