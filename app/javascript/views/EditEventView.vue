@@ -52,9 +52,8 @@
       </div>
       <div :class="['flex gap-3 mb-2', mqMobile ? 'flex-column' : 'flex-row']">
         <div class="event-date">
-          <label for="date" class="text-sm required">Event date</label>
+          <label class="text-sm required">Event date</label>
           <Calendar
-            id="date"
             v-model="event.start_date"
             date-format="DD MM d, yy"
             :min-date="new Date()"

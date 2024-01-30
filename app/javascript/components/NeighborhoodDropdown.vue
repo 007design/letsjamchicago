@@ -1,5 +1,6 @@
 <template>
   <Dropdown
+    id="neighborhood"
     v-model="neighborhood"
     :options="neighborhoods"
     filter
