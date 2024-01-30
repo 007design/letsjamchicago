@@ -79,7 +79,6 @@
               :options="timeOptions.ampm"
             />
           </div>
-          {{ event.start_date }}
         </div>
       </div>
     </template>
@@ -204,26 +203,47 @@ export default {
   watch: {
     hour() {
       if (this.event.start_date) {
-        this.event.start_date.setHours(this.timeHelper);
+        const d = new Date(this.event.start_date);
+        if (d.toString().toLocaleLowerCase() === 'invalid date') {
+          return;
+        }
+        d.setHours(this.timeHelper);
+        this.event.start_date = d;
       }
     },
     min() {
       if (this.event.start_date) {
-        this.event.start_date.setMinutes(this.min);
+        const d = new Date(this.event.start_date);
+        if (d.toString().toLocaleLowerCase() === 'invalid date') {
+          return;
+        }
+        d.setMinutes(this.min);
+        this.event.start_date = d;
       }
     },
     ampm() {
       if (this.event.start_date) {
-        this.event.start_date.setHours(this.timeHelper);
+        const d = new Date(this.event.start_date);
+        if (d.toString().toLocaleLowerCase() === 'invalid date') {
+          return;
+        }
+        d.setHours(this.timeHelper);
+        this.event.start_date = d;
       }
     },
     'event.start_date': {
       handler(newVal, oldVal) {
-        if (newVal !== oldVal) {
-          const d = new Date(this.event.start_date);
-          d.setHours(this.timeHelper);
-          d.setMinutes(this.min);
-          this.event.start_date = d;
+        if (newVal.toString() !== (oldVal ? oldVal.toString() : '')) {
+          try {
+            const d = new Date(this.event.start_date);
+            if (d.toString().toLocaleLowerCase() !== 'invalid date') {
+              d.setHours(this.timeHelper);
+              d.setMinutes(this.min);
+              this.event.start_date = d;
+            }
+          } catch (x) {
+            // do nothing
+          }
         }
       },
     },

@@ -18,15 +18,13 @@
 
       This is obviously not done. Still to do:
       <ul>
-        <li>Terms and Privacy Policy</li>
         <li>Update password functionality</li>
         <li>Registration confirmation (email and page)</li>
-        <li>Add to calendar button</li>
         <li>Better exception handling</li>
         <li>Recaptcha</li>
       </ul>
     </TabPanel>
-    <TabPanel header="Help">
+    <TabPanel header="Contact">
       <div class="help-tab">
         <Message
           v-if="alert"

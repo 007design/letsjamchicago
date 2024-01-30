@@ -17,7 +17,12 @@
             <strong>{{ event.location }}</strong>
           </div>
           <div class="add-to-calendar">
-            <Button link label="Add to calendar" />
+            <a
+              target="_blank"
+              rel="noopener"
+              :href="calendarLink">
+              <Button link label="Add to Google calendar" />
+            </a>
           </div>
         </div>
       </div>
@@ -130,6 +135,27 @@ export default {
     },
     apiKey() {
       return apiKey;
+    },
+    calendarLink() {
+      const timezoneOffset = new Date().getTimezoneOffset() / 60;
+      const date = new Date(this.event.start_date);
+      const start = [
+        date.getFullYear(),
+        `0${(date.getMonth() + 1).toString()}`.slice(-2),
+        date.getDate(),
+        'T',
+        `0${(date.getHours() + timezoneOffset).toString()}`.slice(-2),
+        '00Z',
+      ].join('');
+      const end = [
+        date.getFullYear(),
+        `0${(date.getMonth() + 1).toString()}`.slice(-2),
+        date.getDate(),
+        'T',
+        `0${(date.getHours() + timezoneOffset + 1).toString()}`.slice(-2),
+        '00Z',
+      ].join('');
+      return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${this.event.name}&details=${this.event.description}&location=${this.event.location}&dates=${start}/${end}&ctz=America/Chicago`;
     },
   },
   methods: {
