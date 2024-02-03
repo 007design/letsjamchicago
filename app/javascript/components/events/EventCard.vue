@@ -185,7 +185,7 @@ export default {
     },
     eventMap() {
       const regex = /.+place\/(.+)$/i;
-      return this.event.map.match(regex)[1];
+      return this.event.map?.match(regex)[1];
     },
   },
   methods: {

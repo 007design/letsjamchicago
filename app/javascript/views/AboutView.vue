@@ -16,12 +16,11 @@
 
       <Divider />
 
-      This is obviously not done. Still to do:
+      This is not done. Still to do:
       <ul>
-        <li>Update password functionality</li>
-        <li>Registration confirmation (email and page)</li>
         <li>Better exception handling</li>
         <li>Recaptcha</li>
+        <li>About etc. wording</li>
       </ul>
     </TabPanel>
     <TabPanel header="Contact">
