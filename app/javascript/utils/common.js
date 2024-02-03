@@ -19,8 +19,3 @@ export const formatTime = (dateString) => {
     return 'Invalid date';
   }
 };
-
-export const extractMapPlace = (url) => {
-  const regex = /.+place\/(.+?)\//i;
-  return url.match(regex)[1];
-};

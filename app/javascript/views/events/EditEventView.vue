@@ -87,14 +87,13 @@
       </div>
     </template>
   </Card>
-  <EventPreviewModal v-model:visible="showPreview" :event="newEvent" />
+  <EventPreviewModal v-model:visible="showPreview" :event="event" />
 </template>
 
 <script>
 import { getEvent } from '@/services/events';
 import NeighborhoodDropdown from '@/components/NeighborhoodDropdown.vue';
-import { extractMapPlace } from '@/utils/common';
-import EventPreviewModal from '@/components/EventPreviewModal.vue';
+import EventPreviewModal from '@/components/modals/EventPreviewModal.vue';
 import mq from '@/utils/mq';
 
 export default {
@@ -190,13 +189,6 @@ export default {
         && this.event.description
         && this.event.location
         && this.event.start_date;
-    },
-    newEvent() {
-      return {
-        ...this.event,
-        // start_date: this.event.start_date?.toString(),
-        map: this.event.map?.indexOf('google.com') > -1 ? extractMapPlace(this.event.map) : this.event.map || '',
-      };
     },
   },
   watch: {

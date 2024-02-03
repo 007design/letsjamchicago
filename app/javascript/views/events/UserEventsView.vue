@@ -31,7 +31,7 @@ import { mapActions, mapState } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
 import { useEventsStore } from '@/stores/events';
 import { getEvents, deleteEvent } from '@/services/events';
-import EventsList from '@/components/EventsList.vue';
+import EventsList from '@/components/events/EventsList.vue';
 
 export default {
   name: 'UserEvents',

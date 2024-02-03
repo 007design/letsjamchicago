@@ -95,7 +95,7 @@
 <script>
 import { formatDate, formatTime } from '@/utils/common';
 import mq from '@/utils/mq';
-import EventCard from './EventCard.vue';
+import EventCard from '@/components/events/EventCard.vue';
 
 export default {
   name: 'EventsList',

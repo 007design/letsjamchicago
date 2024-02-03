@@ -29,10 +29,13 @@
       </div>
     </template>
   </Card>
+  <Button label="Forgot password?" link @click="() => $router.push({ name: 'ForgotPassword' })" />
 </template>
 
 <script>
-import { signIn, setSignedIn } from '@/services/auth';
+import { mapActions } from 'pinia';
+import { useAuthStore } from '@/stores/auth';
+import { signIn } from '@/services/auth';
 
 export default {
   name: 'SignInView',
@@ -50,10 +53,11 @@ export default {
     },
   },
   methods: {
+    ...mapActions(useAuthStore, ['setUser']),
     async doLogin() {
       try {
         const { user } = await signIn(this.user);
-        setSignedIn(user);
+        this.setUser(user);
         this.$router.push({ name: 'Home' });
       } catch (error) {
         this.alert = {

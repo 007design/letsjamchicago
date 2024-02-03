@@ -1,6 +1,4 @@
-import { getCookie } from '@/utils/cookies';
-
-const cookieNameSpace = import.meta.env.VITE_COOKIE_NAMESPACE;
+import { setSignedIn } from '@/services/auth';
 
 /**
  * Direct user to sign in page depending on if user is authenticated and confirmed
@@ -9,12 +7,11 @@ const cookieNameSpace = import.meta.env.VITE_COOKIE_NAMESPACE;
  * @param {object} from
  * @param {Function} next
  */
-function requireAuth(to, from, next) {
-  const authCookie = getCookie(`${cookieNameSpace}-auth`);
-
-  if (authCookie) {
+async function requireAuth(to, from, next) {
+  try {
+    await setSignedIn();
     next();
-  } else {
+  } catch {
     next({
       name: 'Home',
     });
@@ -29,7 +26,7 @@ export const routes = [
       {
         path: '',
         name: 'Home',
-        component: () => import('@/views/UpcomingEventsView.vue'),
+        component: () => import('@/views/events/UpcomingEventsView.vue'),
       },
       {
         path: 'about',
@@ -40,50 +37,66 @@ export const routes = [
         path: 'new',
         name: 'NewEvent',
         beforeEnter: requireAuth,
-        component: () => import('@/views/EditEventView.vue'),
+        component: () => import('@/views/events/EditEventView.vue'),
       },
       {
         path: 'edit/:eventId',
         name: 'EditEvent',
         beforeEnter: requireAuth,
-        component: () => import('@/views/EditEventView.vue'),
+        component: () => import('@/views/events/EditEventView.vue'),
         props: true,
       },
       {
         path: 'clone/:eventId',
         name: 'CloneEvent',
         beforeEnter: requireAuth,
-        component: () => import('@/views/EditEventView.vue'),
+        component: () => import('@/views/events/EditEventView.vue'),
         props: true,
       },
       {
         path: 'events',
         name: 'MyEvents',
         beforeEnter: requireAuth,
-        component: () => import('@/views/UserEventsView.vue'),
+        component: () => import('@/views/events/UserEventsView.vue'),
       },
       {
         path: 'attending',
         name: 'AttendingEvents',
         beforeEnter: requireAuth,
-        component: () => import('@/views/AttendingEvents.vue'),
+        component: () => import('@/views/events/AttendingEvents.vue'),
       },
       {
         path: 'account',
         name: 'AccountSettings',
         beforeEnter: requireAuth,
-        component: () => import('@/views/EditUserView.vue'),
+        component: () => import('@/views/auth/EditUserView.vue'),
+      },
+      {
+        path: 'reset/:token',
+        name: 'ResetPassword',
+        component: () => import('@/views/auth/EditUserView.vue'),
+        props: true,
       },
     ],
   },
   {
     path: '/signin',
     name: 'SignIn',
-    component: () => import('@/views/SignInView.vue'),
+    component: () => import('@/views/auth/SignInView.vue'),
   },
   {
     path: '/signup',
     name: 'SignUp',
-    component: () => import('@/views/RegisterView.vue'),
+    component: () => import('@/views/auth/RegisterView.vue'),
+  },
+  {
+    path: '/forgot',
+    name: 'ForgotPassword',
+    component: () => import('@/views/auth/ForgotPasswordView.vue'),
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    redirect: '/',
   },
 ];

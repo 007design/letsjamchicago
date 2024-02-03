@@ -5,17 +5,17 @@
         <h3>Update your password</h3>
       </template>
       <template #content>
-        <div class="flex flex-column gap-1 mb-2">
+        <div v-if="!token" class="flex flex-column gap-1 mb-2">
           <label for="password" class="text-sm">Current password</label>
-          <InputText id="password" type="password" v-model="user.current_password" disabled />
+          <InputText id="password" type="password" v-model="user.current_password" />
         </div>
         <div class="flex flex-column gap-1 mb-2">
           <label for="password" class="text-sm">New password</label>
-          <InputText id="password" type="password" v-model="user.new_password" disabled />
+          <InputText id="password" type="password" v-model="user.password" />
         </div>
         <div class="flex flex-column gap-1 mb-2">
           <label for="confirmPassword" class="text-sm">Retype new password</label>
-          <InputText id="confirmPassword" type="password" v-model="confirmPassword" disabled />
+          <InputText id="confirmPassword" type="password" v-model="confirmPassword" />
         </div>
         <Message
           v-if="alert"
@@ -36,30 +36,41 @@
 </template>
 
 <script>
-import { updateUser, setSignedIn } from '@/services/auth';
+import { mapActions } from 'pinia';
+import { useAuthStore } from '@/stores/auth';
+import { updateUser } from '@/services/auth';
 
 export default {
   name: 'EditUserView',
-  data() {
+  props: {
+    token: {
+      type: String,
+      default: null,
+    },
+  },
+  data(vm) {
     return {
-      user: {},
+      user: {
+        reset_password_token: vm.token,
+      },
       alert: null,
       confirmPassword: null,
     };
   },
   computed: {
     isFormValid() {
-      return this.user.current_password
-        && this.user.new_password
-        && this.user.new_password.length > 5
-        && this.user.new_password === this.confirmPassword;
+      return (this.token ? true : this.user.current_password)
+        && this.user.password
+        && this.user.password.length > 5
+        && this.user.password === this.confirmPassword;
     },
   },
   methods: {
+    ...mapActions(useAuthStore, ['setUser']),
     async doUpdate() {
       try {
         const { user } = await updateUser(this.user);
-        setSignedIn(user);
+        this.setUser(user);
         this.alert = {
           message: 'Password updated successfully',
           type: 'success',

@@ -32,7 +32,7 @@ async function doAxiosCall(
       },
     });
 
-    if (method === 'post') {
+    if (method === 'post' && headers.authorization) {
       setCookie(`${cookieNameSpace}-auth`, headers.authorization);
     }
     return data;
@@ -82,4 +82,16 @@ export async function doDelete(url) {
  */
 export async function doPost(url, payload) {
   return doAxiosCall('post', url, payload);
+}
+
+/**
+ * Custom "post" that returns data or throws an error.
+ *
+ * @param {string} url
+ * @param {object} payload
+ * @param {object} config
+ * @returns {Promise}
+ */
+export async function doPut(url, payload) {
+  return doAxiosCall('put', url, payload);
 }

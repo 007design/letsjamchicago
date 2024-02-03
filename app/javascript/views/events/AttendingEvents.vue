@@ -20,7 +20,7 @@ import { mapActions, mapState } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
 import { useEventsStore } from '@/stores/events';
 import { getAttendingEvents } from '@/services/events';
-import EventCard from '@/components/EventCard.vue';
+import EventCard from '@/components/events/EventCard.vue';
 
 export default {
   name: 'AttendingEvents',

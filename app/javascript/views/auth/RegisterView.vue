@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { signUp, setSignedIn } from '@/services/auth';
+import { signUp } from '@/services/auth';
 
 export default {
   name: 'RegisterView',
@@ -63,10 +63,12 @@ export default {
   methods: {
     async doLogin() {
       try {
-        const user = await signUp(this.user);
+        await signUp(this.user);
 
-        setSignedIn(user);
-        document.location.href = '/';
+        this.alert = {
+          message: 'A confirmation link has been sent to your email. Please check your spam folder.',
+          type: 'success',
+        };
       } catch {
         this.alert = {
           message: 'Could not sign you up. Please verify your email address and password and try again.',

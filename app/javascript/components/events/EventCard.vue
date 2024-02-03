@@ -48,7 +48,7 @@
               loading="lazy"
               allowfullscreen
               referrerpolicy="no-referrer-when-downgrade"
-              :src="`https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${event.map}`">
+              :src="`https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${eventMap}`">
             </iframe>
           </Panel>
         </div>
@@ -109,7 +109,7 @@ import { mapState } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
 import { joinEvent, leaveEvent } from '@/services/events';
 import mq from '@/utils/mq';
-import { formatDate, formatTime } from '../utils/common';
+import { formatDate, formatTime } from '@/utils/common';
 
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
@@ -145,6 +145,7 @@ export default {
         date.getDate(),
         'T',
         `0${(date.getHours() + timezoneOffset).toString()}`.slice(-2),
+        `0${(date.getMinutes()).toString()}`.slice(-2),
         '00Z',
       ].join('');
       const end = [
@@ -153,9 +154,14 @@ export default {
         date.getDate(),
         'T',
         `0${(date.getHours() + timezoneOffset + 1).toString()}`.slice(-2),
+        `0${(date.getMinutes()).toString()}`.slice(-2),
         '00Z',
       ].join('');
-      return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${this.event.name}&details=${this.event.description}&location=${this.event.location}&dates=${start}/${end}&ctz=America/Chicago`;
+      return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(this.event.name)}&details=${encodeURIComponent(this.event.description)}&location=${encodeURIComponent(this.event.location)}&dates=${start}/${end}&ctz=America/Chicago`;
+    },
+    eventMap() {
+      const regex = /.+place\/(.+)$/i;
+      return this.event.map.match(regex)[1];
     },
   },
   methods: {

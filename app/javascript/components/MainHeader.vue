@@ -54,7 +54,7 @@
 import { mapState } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
 import mq from '@/utils/mq';
-import { signOut } from '../services/auth';
+import { signOut } from '@/services/auth';
 
 export default {
   name: 'MainHeader',

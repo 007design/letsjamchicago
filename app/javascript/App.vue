@@ -9,17 +9,15 @@
 </template>
 
 <script>
-import { mapActions } from 'pinia';
-import { getUser, setSignedIn } from '@/services/auth';
+import { mapActions, mapState } from 'pinia';
+import { setSignedIn } from '@/services/auth';
+import { useAuthStore } from '@/stores/auth';
 import { useEventsStore } from '@/stores/events';
 import MainHeader from '@/components/MainHeader.vue';
-import TermsModal from '@/components/TermsModal.vue';
-import PolicyModal from '@/components/PolicyModal.vue';
-import mq from '@/utils/mq';
-import { getCookie } from '@/utils/cookies';
 import MainFooter from '@/components/MainFooter.vue';
-
-const cookieNameSpace = import.meta.env.VITE_COOKIE_NAMESPACE;
+import TermsModal from '@/components/modals/TermsModal.vue';
+import PolicyModal from '@/components/modals/PolicyModal.vue';
+import mq from '@/utils/mq';
 
 export default {
   name: 'App',
@@ -49,17 +47,16 @@ export default {
     };
   },
   async created() {
-    if (getCookie(`${cookieNameSpace}-auth`)) {
+    if (!this.user) {
       try {
-        const user = await getUser();
-
-        setSignedIn(user);
+        await setSignedIn();
       } catch {
-        // do nothing
+        // User not logged in
       }
     }
   },
   computed: {
+    ...mapState(useAuthStore, ['user']),
     isMobile() {
       return this.mqMobile;
     },

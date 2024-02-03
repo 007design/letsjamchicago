@@ -37,7 +37,7 @@ import { mapActions, mapState } from 'pinia';
 import { getEvents } from '@/services/events';
 import { useAuthStore } from '@/stores/auth';
 import { useEventsStore } from '@/stores/events';
-import EventCard from '@/components/EventCard.vue';
+import EventCard from '@/components/events/EventCard.vue';
 import NeighborhoodDropdown from '@/components/NeighborhoodDropdown.vue';
 
 export default {

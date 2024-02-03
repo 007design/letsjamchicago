@@ -3,9 +3,10 @@ import {
   doDelete,
   doPost,
   doPatch,
+  doPut,
 } from '@/utils/api';
-import { deleteCookie } from '@/utils/cookies';
 import { useAuthStore } from '@/stores/auth';
+import { deleteCookie } from '@/utils/cookies';
 
 const cookieNameSpace = import.meta.env.VITE_COOKIE_NAMESPACE;
 
@@ -18,20 +19,9 @@ export async function signOut() {
   try {
     await doDelete('signout');
   } finally {
-    authStore.$reset();
     deleteCookie(`${cookieNameSpace}-auth`);
+    authStore.$reset();
   }
-}
-
-/**
- * Setting all the appropriate info for logging in a user: localstorage/cookies and pinia states
- *
- * @param {object} user
- */
-export function setSignedIn(user) {
-  const authStore = useAuthStore();
-
-  authStore.setUser(user);
 }
 
 /**
@@ -64,12 +54,36 @@ export async function getUser() {
 }
 
 /**
+ * Setting all the appropriate info for logging in a user: localstorage/cookies and pinia states
+ *
+ * @param {object} user
+ */
+export async function setSignedIn() {
+  const authStore = useAuthStore();
+  const user = await getUser();
+  authStore.setUser(user);
+}
+
+/**
  * Updates a user
  *
  * @returns {Promise}
  */
-export async function updateUser({ new_password: password }) {
-  return doPatch('api/v1/users', { password });
+export async function updateUser(user) {
+  if (user.reset_password_token) {
+    return doPut('reset', { user });
+  }
+
+  return doPatch('api/v1/users', { user });
+}
+
+/**
+ * Send password reset email
+ *
+ * @returns {Promise}
+ */
+export async function forgotPassword(user) {
+  return doPost('forgot', { user });
 }
 
 export async function sendContactEmail(email) {

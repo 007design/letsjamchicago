@@ -22,7 +22,7 @@
 
 <script>
 import { newEvent, updateEvent } from '@/services/events';
-import EventCard from './EventCard.vue';
+import EventCard from '@/components/events/EventCard.vue';
 
 export default {
   name: 'EventPreviewModal',
