@@ -8,8 +8,6 @@ import {
 import { useAuthStore } from '@/stores/auth';
 import { deleteCookie } from '@/utils/cookies';
 
-const cookieNameSpace = import.meta.env.VITE_COOKIE_NAMESPACE;
-
 /**
  * Log the user out by: update the Pinia Store, and remove cookies/local storage items
  */
@@ -21,7 +19,7 @@ export async function signOut() {
   } catch {
     // do nothing
   } finally {
-    deleteCookie(`${cookieNameSpace}-auth`);
+    deleteCookie('auth');
     authStore.$reset();
   }
 }
@@ -67,7 +65,7 @@ export async function setSignedIn() {
     const user = await getUser();
     authStore.setUser(user);
   } catch {
-    deleteCookie(`${cookieNameSpace}-auth`);
+    deleteCookie('auth');
     authStore.$reset();
   }
 }

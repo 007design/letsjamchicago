@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { getCookie, setCookie } from '@/utils/cookies';
 
-const cookieNameSpace = import.meta.env.VITE_COOKIE_NAMESPACE;
 const domain = import.meta.env.VITE_DOMAIN;
 
 /**
@@ -24,7 +23,7 @@ async function doAxiosCall(
       url: `/${url}`,
       data: payload,
       headers: {
-        Authorization: getCookie(`${cookieNameSpace}-auth`),
+        Authorization: getCookie('auth'),
         'Access-Control-Allow-Origin': domain,
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
@@ -33,7 +32,7 @@ async function doAxiosCall(
     });
 
     if (method === 'post' && headers.authorization) {
-      setCookie(`${cookieNameSpace}-auth`, headers.authorization);
+      setCookie('auth', headers.authorization);
     }
     return data;
   } catch (error) {
