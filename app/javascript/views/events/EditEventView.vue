@@ -201,7 +201,7 @@ export default {
     mapObject() {
       try {
         let replaced = this.event.map.replace(/\\"/g, '"');
-        replaced = replaced.slice(1, replaced.length - 1);
+        replaced = replaced.replace(/^["|']\{/, '{').replace(/\}["|']$/, '}');
         const mapData = JSON.parse(replaced);
         return mapData;
       } catch {
