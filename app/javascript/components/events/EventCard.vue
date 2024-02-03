@@ -155,13 +155,15 @@ export default {
     },
   },
   mounted() {
-    map = new window.google.maps.Map(document.getElementById('eventmap'), {
-      center: {
-        lat: 41.833871,
-        lng: -87.89677,
-      },
-      zoom: 13,
-    });
+    if (this.event.map) {
+      map = new window.google.maps.Map(document.getElementById('eventmap'), {
+        center: {
+          lat: 41.833871,
+          lng: -87.89677,
+        },
+        zoom: 13,
+      });
+    }
   },
   computed: {
     ...mapState(useAuthStore, ['user']),
@@ -206,7 +208,7 @@ export default {
   watch: {
     mapObject: {
       handler(mapData) {
-        if (mapData) {
+        if (map && mapData) {
           this.$nextTick(() => {
             if (marker != null) marker.setMap(null);
             // eslint-disable-next-line no-unused-vars
