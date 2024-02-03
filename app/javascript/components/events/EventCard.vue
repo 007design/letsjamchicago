@@ -8,6 +8,7 @@
           </Chip>
           <div v-if="!mqMobile" class="event-location">
             <strong>{{ event.location }}</strong>
+            <p v-if="mapObject" class="address-line">{{ mapObject.name }}</p>
           </div>
         </div>
         <div class="event-card-when">
@@ -15,6 +16,7 @@
           {{ dateFormatter(event.start_date) }} @ {{ timeFormatter(event.start_date) }}
           <div v-if="mqMobile">
             <strong>{{ event.location }}</strong>
+            <p v-if="mapObject" class="address-line">{{ mapObject.name }}</p>
           </div>
           <div
             v-if="event.cancelled"
@@ -40,6 +42,7 @@
             class="event-description-panel"
             toggleable
             collapsed
+            @update:collapsed="toggleEventDesc"
           >
             <template #header>
               <h3>{{ event.name }}</h3>
@@ -48,8 +51,9 @@
               {{ event.description }}
             </div>
             <div
-              v-if="event.map"
-              id="eventmap">
+              v-if="mapObject"
+              class="event-map"
+              :id="`eventmap-${event.id || 1}`">
             </div>
           </Panel>
         </div>
@@ -139,11 +143,6 @@ export default {
   mixins: [mq],
   inject: ['loadEvents'],
   emits: ['filter', 'decline'],
-  data() {
-    return {
-      googleMarker: null,
-    };
-  },
   props: {
     event: {
       type: Object,
@@ -153,17 +152,6 @@ export default {
       type: Boolean,
       default: false,
     },
-  },
-  mounted() {
-    if (this.event.map) {
-      map = new window.google.maps.Map(document.getElementById('eventmap'), {
-        center: {
-          lat: 41.833871,
-          lng: -87.89677,
-        },
-        zoom: 13,
-      });
-    }
   },
   computed: {
     ...mapState(useAuthStore, ['user']),
@@ -198,30 +186,13 @@ export default {
     },
     mapObject() {
       try {
-        const mapData = JSON.parse(this.event.map);
+        let replaced = this.event.map.replace(/\\"/g, '"');
+        replaced = replaced.slice(1, replaced.length - 1);
+        const mapData = JSON.parse(replaced);
         return mapData;
       } catch {
         return null;
       }
-    },
-  },
-  watch: {
-    mapObject: {
-      handler(mapData) {
-        if (map && mapData) {
-          this.$nextTick(() => {
-            if (marker != null) marker.setMap(null);
-            // eslint-disable-next-line no-unused-vars
-            marker = new window.google.maps.Marker({
-              map,
-              title: this.mapObject.name,
-              position: this.mapObject.geometry.location,
-            });
-            map.setCenter(this.mapObject.geometry.location);
-          });
-        }
-      },
-      immediate: true,
     },
   },
   methods: {
@@ -239,6 +210,25 @@ export default {
     },
     doCloneEvent() {
       this.$router.push({ name: 'CloneEvent', params: { eventId: this.event.id }, query: { clone: true } });
+    },
+    toggleEventDesc(value) {
+      if (!value && !map && this.mapObject) {
+        map = new window.google.maps.Map(document.getElementById(`eventmap-${this.event.id || 1}`), {
+          center: {
+            lat: 41.833871,
+            lng: -87.89677,
+          },
+          zoom: 13,
+        });
+        if (marker != null) marker.setMap(null);
+
+        marker = new window.google.maps.Marker({
+          map,
+          title: this.mapObject.name,
+          position: this.mapObject.geometry.location,
+        });
+        map.setCenter(this.mapObject.geometry.location);
+      }
     },
     async doCancelEvent() {
       this.$confirm.require({
@@ -319,7 +309,14 @@ h3 {
   margin: 0;
 }
 
-#eventmap {
+.event-details {
+  :deep(.p-panel-header) {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.event-map {
   border: 1px solid #e2e8f0;
   height: 200px;
   width: 200px;
@@ -361,6 +358,10 @@ h3 {
     text-align: right;
     margin-bottom: .5em;
   }
+}
+
+.address-line {
+  margin: 0;
 }
 
 .event-location {

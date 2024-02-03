@@ -12,7 +12,7 @@
       </div>
       <div class="flex flex-column gap-1 mb-2">
         <label for="description" class="text-sm required">Event description</label>
-        <InputText id="description" type="text" v-model="event.description" required />
+        <Textarea id="description" v-model="event.description" auto-resize rows="5" required />
       </div>
       <div class="flex flex-column gap-1 mb-2">
         <div class="input-header">
@@ -27,7 +27,7 @@
         </div>
         <NeighborhoodDropdown id="neighborhood" v-model="event.neighborhood" />
         <OverlayPanel ref="neighborhoodTooltip">
-          Select a neighborhood to help local musicians find your event
+          Select a neighborhood to help local musicians find your event.
         </OverlayPanel>
       </div>
       <div :class="['flex gap-3 mb-2', mqMobile ? 'flex-column' : 'flex-row']">
@@ -67,7 +67,7 @@
       <div class="flex flex-column gap-1 mb-2">
         <div class="input-header">
           <label for="map" class="text-sm">
-            Google map location
+            Event location address
           </label>
           <Badge
             value="?"
@@ -76,6 +76,9 @@
           />
         </div>
         <InputText id="map" type="text" v-model="mapName" />
+        <OverlayPanel ref="mapTooltip">
+          Add an address so attendees can find your event.
+        </OverlayPanel>
         <div id="previewmap" :class="{ visible: event.map }"></div>
       </div>
     </template>
@@ -197,7 +200,9 @@ export default {
   computed: {
     mapObject() {
       try {
-        const mapData = JSON.parse(this.event.map);
+        let replaced = this.event.map.replace(/\\"/g, '"');
+        replaced = replaced.slice(1, replaced.length - 1);
+        const mapData = JSON.parse(replaced);
         return mapData;
       } catch {
         return null;
@@ -228,7 +233,7 @@ export default {
   watch: {
     mapObject: {
       handler(mapData) {
-        if (mapData && map) {
+        if (mapData && map && this.mapObject) {
           this.$nextTick(() => {
             if (marker != null) marker.setMap(null);
             // eslint-disable-next-line no-unused-vars
