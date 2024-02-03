@@ -57,7 +57,10 @@ export default {
     async doSave() {
       if (this.event.id) {
         try {
-          await updateEvent(this.event);
+          await updateEvent({
+            ...this.event,
+            map: this.event.map ? JSON.stringify(this.event.map) : '',
+          });
           document.location.href = '/';
         } catch {
           this.isDialogVisible = false;
@@ -70,7 +73,10 @@ export default {
         }
       } else {
         try {
-          await newEvent(this.event);
+          await newEvent({
+            ...this.event,
+            map: this.event.map ? JSON.stringify(this.event.map) : '',
+          });
           document.location.href = '/';
         } catch {
           this.isDialogVisible = false;

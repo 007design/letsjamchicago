@@ -47,15 +47,10 @@
             <div class="event-description">
               {{ event.description }}
             </div>
-            <iframe
+            <div
               v-if="event.map"
-              :width="mqMobile ? '100%' : 200"
-              height="200"
-              loading="lazy"
-              allowfullscreen
-              referrerpolicy="no-referrer-when-downgrade"
-              :src="`https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${eventMap}`">
-            </iframe>
+              id="eventmap">
+            </div>
           </Panel>
         </div>
       </div>
@@ -136,12 +131,19 @@ import mq from '@/utils/mq';
 import { formatDate, formatTime } from '@/utils/common';
 
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+// eslint-disable-next-line no-unused-vars, one-var, one-var-declaration-per-line
+let map, marker;
 
 export default {
   name: 'EventCard',
   mixins: [mq],
   inject: ['loadEvents'],
   emits: ['filter', 'decline'],
+  data() {
+    return {
+      googleMarker: null,
+    };
+  },
   props: {
     event: {
       type: Object,
@@ -151,6 +153,15 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+  mounted() {
+    map = new window.google.maps.Map(document.getElementById('eventmap'), {
+      center: {
+        lat: 41.833871,
+        lng: -87.89677,
+      },
+      zoom: 13,
+    });
   },
   computed: {
     ...mapState(useAuthStore, ['user']),
@@ -183,9 +194,32 @@ export default {
       ].join('');
       return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(this.event.name)}&details=${encodeURIComponent(this.event.description)}&location=${encodeURIComponent(this.event.location)}&dates=${start}/${end}&ctz=America/Chicago`;
     },
-    eventMap() {
-      const regex = /.+place\/(.+)$/i;
-      return this.event.map?.match(regex)[1];
+    mapObject() {
+      try {
+        const mapData = JSON.parse(this.event.map);
+        return mapData;
+      } catch {
+        return null;
+      }
+    },
+  },
+  watch: {
+    mapObject: {
+      handler(mapData) {
+        if (mapData) {
+          this.$nextTick(() => {
+            if (marker != null) marker.setMap(null);
+            // eslint-disable-next-line no-unused-vars
+            marker = new window.google.maps.Marker({
+              map,
+              title: this.mapObject.name,
+              position: this.mapObject.geometry.location,
+            });
+            map.setCenter(this.mapObject.geometry.location);
+          });
+        }
+      },
+      immediate: true,
     },
   },
   methods: {
@@ -283,11 +317,14 @@ h3 {
   margin: 0;
 }
 
-iframe {
+#eventmap {
   border: 1px solid #e2e8f0;
+  height: 200px;
+  width: 200px;
 
   .mobile & {
     margin-top: 1em;
+    width: 100%;
   }
 }
 

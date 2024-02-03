@@ -30,26 +30,6 @@
           Select a neighborhood to help local musicians find your event
         </OverlayPanel>
       </div>
-      <div class="flex flex-column gap-1 mb-2">
-        <label for="location" class="text-sm required">Event location</label>
-        <InputText id="location" type="text" v-model="event.location" required />
-      </div>
-      <div class="flex flex-column gap-1 mb-2">
-        <div class="input-header">
-          <label for="map" class="text-sm">
-            Google map URL
-          </label>
-          <Badge
-            value="?"
-            severity="info"
-            @click="toggleMapTooltip"
-          />
-        </div>
-        <InputText id="map" type="text" v-model="event.map" />
-        <OverlayPanel ref="mapTooltip">
-          Paste a URL from Google Maps
-        </OverlayPanel>
-      </div>
       <div :class="['flex gap-3 mb-2', mqMobile ? 'flex-column' : 'flex-row']">
         <div class="event-date">
           <label class="text-sm required">Event date</label>
@@ -80,6 +60,24 @@
           </div>
         </div>
       </div>
+      <div class="flex flex-column gap-1 mb-2">
+        <label for="location" class="text-sm required">Event location name</label>
+        <InputText id="location" type="text" v-model="event.location" required />
+      </div>
+      <div class="flex flex-column gap-1 mb-2">
+        <div class="input-header">
+          <label for="map" class="text-sm">
+            Google map location
+          </label>
+          <Badge
+            value="?"
+            severity="info"
+            @click="toggleMapTooltip"
+          />
+        </div>
+        <InputText id="map" type="text" v-model="mapName" />
+        <div id="previewmap" :class="{ visible: event.map }"></div>
+      </div>
     </template>
     <template #footer>
       <div class="footer-buttons">
@@ -98,7 +96,7 @@
     </template>
   </Card>
   <ConfirmDialog></ConfirmDialog>
-  <EventPreviewModal v-model:visible="showPreview" :event="event" />
+  <EventPreviewModal v-model:visible="showPreview" :event="previewEvent" />
 </template>
 
 <script>
@@ -106,6 +104,9 @@ import { getEvent, deleteEvent } from '@/services/events';
 import NeighborhoodDropdown from '@/components/NeighborhoodDropdown.vue';
 import EventPreviewModal from '@/components/modals/EventPreviewModal.vue';
 import mq from '@/utils/mq';
+
+// eslint-disable-next-line no-unused-vars, one-var, one-var-declaration-per-line
+let map, marker;
 
 export default {
   name: 'NewEventView',
@@ -123,6 +124,7 @@ export default {
   data(vm) {
     return {
       event: {},
+      // map: null,
       showPreview: false,
       clone: vm.$route.query.clone,
       hour: '12',
@@ -178,6 +180,7 @@ export default {
           this.min = m.toString();
           this.ampm = x;
         }
+        // this.map = event.map;
       } catch (err) {
         this.$toast.add({
           severity: 'danger',
@@ -188,7 +191,18 @@ export default {
       }
     }
   },
+  mounted() {
+    this.setupMap();
+  },
   computed: {
+    mapObject() {
+      try {
+        const mapData = JSON.parse(this.event.map);
+        return mapData;
+      } catch {
+        return null;
+      }
+    },
     timeHelper() {
       // eslint-disable-next-line no-nested-ternary
       return this.ampm === 'AM'
@@ -201,8 +215,34 @@ export default {
         && this.event.location
         && this.event.start_date;
     },
+    mapName() {
+      return this.mapObject ? this.mapObject.name : '';
+    },
+    previewEvent() {
+      return {
+        ...this.event,
+        // map: this.map,
+      };
+    },
   },
   watch: {
+    mapObject: {
+      handler(mapData) {
+        if (mapData && map) {
+          this.$nextTick(() => {
+            if (marker != null) marker.setMap(null);
+            // eslint-disable-next-line no-unused-vars
+            marker = new window.google.maps.Marker({
+              map,
+              title: this.mapObject.name,
+              position: this.mapObject.geometry.location,
+            });
+            map.setCenter(this.mapObject.geometry.location);
+          });
+        }
+      },
+      immediate: true,
+    },
     hour() {
       if (this.event.start_date) {
         const d = new Date(this.event.start_date);
@@ -284,11 +324,34 @@ export default {
     toggleMapTooltip(e) {
       this.$refs.mapTooltip.toggle(e);
     },
+    setupMap() {
+      map = new window.google.maps.Map(document.getElementById('previewmap'), {
+        center: {
+          lat: 41.833871,
+          lng: -87.89677,
+        },
+        zoom: 13,
+      });
+      const input = document.getElementById('map');
+      const options = {
+        componentRestrictions: { country: 'us' },
+        fields: ['address_components', 'geometry', 'icon', 'name'],
+        strictBounds: false,
+      };
+      const autocomplete = new window.google.maps.places.Autocomplete(input, options);
+      window.google.maps.event.addListener(autocomplete, 'place_changed', () => {
+        const place = autocomplete.getPlace();
+        this.event.map = place;
+      });
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+#previewmap.visible {
+  height: 200px;
+}
 .edit-event-card {
   padding: 0 1em 1em;
 }

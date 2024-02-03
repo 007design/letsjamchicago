@@ -10,8 +10,8 @@
           <InputText id="password" type="password" v-model="user.current_password" />
         </div>
         <div class="flex flex-column gap-1 mb-2">
-          <label for="password" class="text-sm">New password</label>
-          <InputText id="password" type="password" v-model="user.password" />
+          <label for="newPassword" class="text-sm">New password</label>
+          <InputText id="newPassword" type="password" v-model="user.newPassword" />
         </div>
         <div class="flex flex-column gap-1 mb-2">
           <label for="confirmPassword" class="text-sm">Retype new password</label>
@@ -83,7 +83,10 @@ export default {
     ...mapActions(useAuthStore, ['setUser']),
     async doUpdate() {
       try {
-        const { user } = await updateUser(this.user);
+        const { user } = await updateUser({
+          ...this.user,
+          password: this.user.newPassword,
+        });
         this.setUser(user);
         this.alert = {
           message: 'Password updated successfully',
