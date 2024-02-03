@@ -127,7 +127,6 @@ export default {
   data(vm) {
     return {
       event: {},
-      // map: null,
       showPreview: false,
       clone: vm.$route.query.clone,
       hour: '12',
@@ -247,6 +246,7 @@ export default {
         }
       },
       immediate: true,
+      deep: true,
     },
     hour() {
       if (this.event.start_date) {
@@ -330,23 +330,25 @@ export default {
       this.$refs.mapTooltip.toggle(e);
     },
     setupMap() {
-      map = new window.google.maps.Map(document.getElementById('previewmap'), {
-        center: {
-          lat: 41.833871,
-          lng: -87.89677,
-        },
-        zoom: 13,
-      });
-      const input = document.getElementById('map');
-      const options = {
-        componentRestrictions: { country: 'us' },
-        fields: ['address_components', 'geometry', 'icon', 'name'],
-        strictBounds: false,
-      };
-      const autocomplete = new window.google.maps.places.Autocomplete(input, options);
-      window.google.maps.event.addListener(autocomplete, 'place_changed', () => {
-        const place = autocomplete.getPlace();
-        this.event.map = place;
+      this.$nextTick(() => {
+        map = new window.google.maps.Map(document.getElementById('previewmap'), {
+          center: {
+            lat: 41.833871,
+            lng: -87.89677,
+          },
+          zoom: 13,
+        });
+        const input = document.getElementById('map');
+        const options = {
+          componentRestrictions: { country: 'us' },
+          fields: ['address_components', 'geometry', 'icon', 'name'],
+          strictBounds: false,
+        };
+        const autocomplete = new window.google.maps.places.Autocomplete(input, options);
+        window.google.maps.event.addListener(autocomplete, 'place_changed', () => {
+          const place = autocomplete.getPlace();
+          this.event.map = JSON.stringify(place);
+        });
       });
     },
   },
