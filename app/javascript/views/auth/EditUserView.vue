@@ -74,9 +74,9 @@ export default {
   computed: {
     isFormValid() {
       return (this.token ? true : this.user.current_password)
-        && this.user.password
-        && this.user.password.length > 5
-        && this.user.password === this.confirmPassword;
+        && this.user.newPassword
+        && this.user.newPassword.length > 5
+        && this.user.newPassword === this.confirmPassword;
     },
   },
   methods: {
