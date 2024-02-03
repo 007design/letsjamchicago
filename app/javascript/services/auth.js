@@ -18,6 +18,8 @@ export async function signOut() {
 
   try {
     await doDelete('signout');
+  } catch {
+    // do nothing
   } finally {
     deleteCookie(`${cookieNameSpace}-auth`);
     authStore.$reset();
@@ -60,8 +62,14 @@ export async function getUser() {
  */
 export async function setSignedIn() {
   const authStore = useAuthStore();
-  const user = await getUser();
-  authStore.setUser(user);
+
+  try {
+    const user = await getUser();
+    authStore.setUser(user);
+  } catch {
+    deleteCookie(`${cookieNameSpace}-auth`);
+    authStore.$reset();
+  }
 }
 
 /**
@@ -75,6 +83,10 @@ export async function updateUser(user) {
   }
 
   return doPatch('api/v1/users', { user });
+}
+
+export async function deleteUser() {
+  return doDelete('api/v1/users');
 }
 
 /**

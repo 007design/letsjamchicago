@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     post 'signin', to: 'users/sessions#create', as: :user_session
     delete 'signout', to: 'users/sessions#destroy'
     patch 'api/v1/users', to: 'users/registrations#update'
+    delete 'api/v1/users', to: 'users/registrations#destroy'
     post 'forgot', to: 'users/passwords#create'
     get 'confirm/:confirmation_token', to: 'users/confirmations#show'
     get 'reset/:reset_password_token', to: 'users/passwords#edit'

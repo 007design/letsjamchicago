@@ -10,17 +10,17 @@
     v-else
     :events="currentEvents"
     is-current-events
-    @editEvent="editEvent"
-    @deleteEvent="deleteEvent"
+    @editEvent="doEditEvent"
+    @deleteEvent="doDeleteEvent"
   />
   <template v-if="pastEvents.length">
     <Divider />
     <h2>Past events</h2>
     <EventsList
       :events="pastEvents"
-      @editEvent="editEvent"
-      @deleteEvent="deleteEvent"
-      @cloneEvent="cloneEvent"
+      @editEvent="doEditEvent"
+      @deleteEvent="doDeleteEvent"
+      @cloneEvent="doCloneEvent"
     />
   </template>
   <ConfirmDialog></ConfirmDialog>
@@ -70,13 +70,13 @@ export default {
         });
       }
     },
-    editEvent(event) {
+    doEditEvent(event) {
       this.$router.push({ name: 'EditEvent', params: { eventId: event.id } });
     },
-    cloneEvent(event) {
+    doCloneEvent(event) {
       this.$router.push({ name: 'CloneEvent', params: { eventId: event.id }, query: { clone: true } });
     },
-    deleteEvent(event) {
+    doDeleteEvent(event) {
       this.$confirm.require({
         message: 'Are you sure you want to delete this event? This cannot be undone!',
         header: 'Confirmation',

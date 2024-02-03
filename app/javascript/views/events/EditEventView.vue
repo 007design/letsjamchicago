@@ -83,15 +83,26 @@
     </template>
     <template #footer>
       <div class="footer-buttons">
-        <Button label="Preview" @click="doPreview" :disabled="!isFormValid" />
+        <Button
+          label="Preview"
+          @click="doPreview"
+          :disabled="!isFormValid"
+        />
+        <Button
+          v-if="event.id && !clone"
+          class="delete-event-button"
+          label="Delete event"
+          @click="doDelete"
+        />
       </div>
     </template>
   </Card>
+  <ConfirmDialog></ConfirmDialog>
   <EventPreviewModal v-model:visible="showPreview" :event="event" />
 </template>
 
 <script>
-import { getEvent } from '@/services/events';
+import { getEvent, deleteEvent } from '@/services/events';
 import NeighborhoodDropdown from '@/components/NeighborhoodDropdown.vue';
 import EventPreviewModal from '@/components/modals/EventPreviewModal.vue';
 import mq from '@/utils/mq';
@@ -243,6 +254,30 @@ export default {
     async doPreview() {
       this.showPreview = true;
     },
+    async doDelete() {
+      this.$confirm.require({
+        message: 'Are you sure you want to delete this event? This cannot be undone!',
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        rejectClass: 'p-button-secondary p-button-outlined',
+        rejectLabel: 'Cancel',
+        acceptClass: 'p-button-danger delete-button',
+        acceptLabel: 'Delete event',
+        accept: async () => {
+          try {
+            await deleteEvent(this.event);
+            document.location.href = '/';
+          } catch {
+            this.$toast.add({
+              severity: 'danger',
+              summary: 'Error',
+              detail: 'Could not delete event. Please sign in again.',
+              life: 3000,
+            });
+          }
+        },
+      });
+    },
     toggleNeighborhoodTooltip(e) {
       this.$refs.neighborhoodTooltip.toggle(e);
     },
@@ -258,6 +293,21 @@ export default {
   padding: 0 1em 1em;
 }
 
+.p-button.p-button-link {
+  color: #44B6E5;
+  background: transparent;
+}
+
+.p-button {
+  background: #44B6E5;
+  border-color: #44B6E5;
+}
+
+.p-button-sm {
+  padding: .4em .5em;
+  font-size: 14px;
+}
+
 .input-header {
   .p-badge {
     cursor: pointer;
@@ -271,7 +321,14 @@ export default {
 
 .footer-buttons {
   display: flex;
-  justify-content: right;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+.delete-event-button {
+  background: #EF4444;
+  border-color: #EF4444;
+  color: white;
 }
 
 .event-date,
@@ -297,20 +354,5 @@ export default {
   :deep(.p-datepicker table td.p-datepicker-today > span) {
     background-color: transparent;
   }
-}
-
-.p-button.p-button-link {
-  color: #44B6E5;
-  background: transparent;
-}
-
-.p-button {
-  background: #44B6E5;
-  border-color: #44B6E5;
-}
-
-.p-button-sm {
-  padding: .4em .5em;
-  font-size: 14px;
 }
 </style>

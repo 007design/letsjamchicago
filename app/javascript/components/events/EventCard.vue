@@ -16,7 +16,13 @@
           <div v-if="mqMobile">
             <strong>{{ event.location }}</strong>
           </div>
-          <div class="add-to-calendar">
+          <div
+            v-if="event.cancelled"
+            class="cancelled-flag"
+          >
+            Cancelled
+          </div>
+          <div v-else class="add-to-calendar">
             <a
               target="_blank"
               rel="noopener"
@@ -71,12 +77,29 @@
         </template>
         <template v-else-if="event.owned">
           <Button
+            v-if="event.cancelled"
             class="edit-event-button"
             :size="mqMobile ? 'small': ''"
-            severity="secondary"
-            label="Edit event"
-            @click="editEvent"
+            label="Clone event"
+            @click="doCloneEvent"
           />
+          <div v-else class="button-group">
+            <Button
+              class="edit-event-button"
+              :size="mqMobile ? 'small': ''"
+              severity="secondary"
+              label="Edit event"
+              @click="doEditEvent"
+            />
+            <Button
+              class="cancel-event-button"
+              :size="mqMobile ? 'small': ''"
+              severity="danger"
+              link
+              label="Cancel event"
+              @click="doCancelEvent"
+            />
+          </div>
         </template>
         <template v-else-if="event.attending">
           <Button
@@ -84,7 +107,7 @@
             :size="mqMobile ? 'small': ''"
             severity="danger"
             label="Decline event"
-            @click="leaveEvent"
+            @click="doLeaveEvent"
           />
         </template>
         <template v-else>
@@ -93,7 +116,7 @@
             :size="mqMobile ? 'small': ''"
             severity="success"
             label="Attend event"
-            @click="joinEvent"
+            @click="doJoinEvent"
           />
         </template>
         <Tag severity="success">
@@ -102,12 +125,13 @@
       </div>
     </template>
   </Card>
+  <ConfirmDialog></ConfirmDialog>
 </template>
 
 <script>
 import { mapState } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
-import { joinEvent, leaveEvent } from '@/services/events';
+import { joinEvent, leaveEvent, cancelEvent } from '@/services/events';
 import mq from '@/utils/mq';
 import { formatDate, formatTime } from '@/utils/common';
 
@@ -174,17 +198,44 @@ export default {
     filterBy(neighborhood) {
       this.$emit('filter', neighborhood);
     },
-    editEvent() {
+    doEditEvent() {
       this.$router.push({ name: 'EditEvent', params: { eventId: this.event.id } });
     },
-    async joinEvent() {
+    doCloneEvent() {
+      this.$router.push({ name: 'CloneEvent', params: { eventId: this.event.id }, query: { clone: true } });
+    },
+    async doCancelEvent() {
+      this.$confirm.require({
+        message: 'Are you sure you want to cancel this event? This cannot be undone!',
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        rejectClass: 'p-button-secondary p-button-outlined',
+        rejectLabel: 'Go back',
+        acceptClass: 'p-button-danger delete-button',
+        acceptLabel: 'Cancel event',
+        accept: async () => {
+          try {
+            await cancelEvent(this.event);
+            this.loadEvents();
+          } catch {
+            this.$toast.add({
+              severity: 'danger',
+              summary: 'Error',
+              detail: 'Could not cancel event. Please sign in again.',
+              life: 3000,
+            });
+          }
+        },
+      });
+    },
+    async doJoinEvent() {
       try {
         await joinEvent(this.event);
       } finally {
         await this.loadEvents();
       }
     },
-    async leaveEvent() {
+    async doLeaveEvent() {
       try {
         await leaveEvent(this.event);
         this.$emit('decline');
@@ -207,11 +258,19 @@ export default {
   .p-button.p-button-link {
     color: #44B6E5;
     background: transparent;
+
+    &.cancel-event-button {
+      color: red;
+    }
   }
 
   .p-button-sm {
     padding: .4em .5em;
     font-size: 14px;
+  }
+
+  .cancelled-flag {
+    color: red;
   }
 }
 

@@ -30,6 +30,15 @@ export async function updateEvent(event) {
   return doPatch(`api/v1/events/${event.id}`, { event });
 }
 
+export async function cancelEvent(event) {
+  return doPatch(`api/v1/events/${event.id}`, {
+    event: {
+      ...event,
+      cancelled: true,
+    },
+  });
+}
+
 export async function deleteEvent(event) {
   return doDelete(`api/v1/events/${event.id}`);
 }

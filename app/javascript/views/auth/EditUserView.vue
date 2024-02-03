@@ -32,13 +32,27 @@
         </div>
       </template>
     </Card>
+    <Card class="delete-user-card">
+      <template #header>
+        <h3>Delete your account</h3>
+      </template>
+      <template #content>
+        This cannot be undone!
+      </template>
+      <template #footer>
+        <div class="footer-buttons">
+          <Button class="delete-button" label="Delete" @click="doDelete" />
+        </div>
+      </template>
+    </Card>
   </div>
+  <ConfirmDialog></ConfirmDialog>
 </template>
 
 <script>
 import { mapActions } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
-import { updateUser } from '@/services/auth';
+import { updateUser, deleteUser, signOut } from '@/services/auth';
 
 export default {
   name: 'EditUserView',
@@ -82,6 +96,31 @@ export default {
         };
       }
     },
+    async doDelete() {
+      this.$confirm.require({
+        message: 'Are you sure you want to delete your account? This cannot be undone!',
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        rejectClass: 'p-button-secondary p-button-outlined',
+        rejectLabel: 'Go back',
+        acceptClass: 'p-button-danger delete-button',
+        acceptLabel: 'Delete account',
+        accept: async () => {
+          try {
+            await deleteUser();
+            await signOut();
+            document.location.href = '/';
+          } catch {
+            this.$toast.add({
+              severity: 'danger',
+              summary: 'Error',
+              detail: 'Could not delete your account. Please sign in again.',
+              life: 3000,
+            });
+          }
+        },
+      });
+    },
   },
 };
 </script>
@@ -89,31 +128,39 @@ export default {
 <style lang="scss" scoped>
 .update-user-view {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 h3 {
   margin-left: 1em;
 }
 
-.update-user-card {
+.p-button {
+  background: #44B6E5;
+  border-color: #44B6E5;
+}
+
+.update-user-card,
+.delete-user-card {
+  width: 100%;
   max-width: 320px;
   margin-top: 1em;
 
-  .footer-buttons {
-    display: flex;
-    justify-content: space-between;
+  button {
+    width: 100%;
   }
+}
+
+.delete-button {
+  color: white;
+  background: red;
+  border-color: red;
 }
 
 .alert-message {
   :deep(.p-message-text) {
     font-size: 12px;
   }
-}
-
-.p-button {
-  background: #44B6E5;
-  border-color: #44B6E5;
 }
 </style>

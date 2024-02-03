@@ -17,8 +17,8 @@ class Api::V1::EventsController < ApplicationController
       events = events.where('events.user_id = ?', params[:u]) if params[:u].present? && user_id.to_s == params[:u]
       events = events.where('neighborhood = ?', params[:n]) if params[:n].present?
       events = events.group('events.id')
-      events = events.order('events.start_date DESC')
-      render json: events.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date', 'attendee_count', 'owned', 'attending'])
+      events = events.order('events.start_date ASC')
+      render json: events.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date', 'cancelled', 'attendee_count', 'owned', 'attending'])
     end
   end
 
@@ -38,7 +38,7 @@ class Api::V1::EventsController < ApplicationController
     user_id = current_user ? current_user.id : 0
     event = Event.find(params[:id])
     if (user_id === event.user_id)
-      render json: event.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date'])
+      render json: event.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date', 'cancelled'])
     else
       render json: { 
         status: 401,
@@ -88,6 +88,7 @@ class Api::V1::EventsController < ApplicationController
   private
 
   def event_params
-    params.require(:event).permit(:id, :name, :location, :description, :neighborhood, :map, :start_date)
+    safe_params = params.require(:event).permit(:id, :name, :location, :description, :neighborhood, :map, :start_date, :cancelled)
+    safe_params.to_hash
   end
 end
