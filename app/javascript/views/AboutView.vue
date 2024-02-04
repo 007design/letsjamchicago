@@ -2,28 +2,16 @@
   <TabView class="about-tabs">
     <TabPanel header="About">
       <p>This site is, and will always be, free to use and ad-free.
-        I created it primarily to find other, local musicians for me to jam with
-        after failing to do so via Craigslist and Meetup and so forth.</p>
-      <p>Please be respectful and polite. Don't try and post some hateful nonsense,
-        I'll just remove it and ban you. If your event is at a bar or something where kids
+        I created it primarily to find other, local musicians to jam with.</p>
+      <p>Please be respectful and polite. If your event is at a bar or something where kids
         aren't allowed, please note that in the description. If you want to exclude people
-        for any other reason, go somewhere else.</p>
-      <p><strong>Don't be that guy/gal!</strong></p>
+        for any other reason, please go somewhere else.</p>
       <p>I'll never sell or disclose your information, email address, etc.
-        I'm not out to make a dime, I just want to help musicians find each other so we can
+        I'm not out to make any money, I just want to help musicians find each other so we can
         all become better, happier musicians. If you feel like contributing, the project is
-        open source and on Github. Check out the Contribute tab above.</p>
-
-      <Divider />
-
-      This is not done. Still to do:
-      <ul>
-        <li>Better exception handling</li>
-        <li>Recaptcha</li>
-        <li>About etc. wording</li>
-      </ul>
+        open source. Click the Contact/Help tab to email me.</p>
     </TabPanel>
-    <TabPanel header="Contact">
+    <TabPanel header="Contact/Help">
       <div class="help-tab">
         <Message
           v-if="alert"
@@ -82,9 +70,6 @@
           </template>
         </Card>
       </div>
-    </TabPanel>
-    <TabPanel header="Contribute">
-      Buy me a beer
     </TabPanel>
   </TabView>
 </template>
