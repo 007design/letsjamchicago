@@ -17,7 +17,8 @@ export async function signOut() {
   try {
     await doDelete('signout');
   } catch {
-    // do nothing
+    deleteCookie('auth');
+    authStore.$reset();
   } finally {
     deleteCookie('auth');
     authStore.$reset();

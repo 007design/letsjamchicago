@@ -10,6 +10,10 @@
         I'm not out to make any money, I just want to help musicians find each other so we can
         all become better, happier musicians. If you feel like contributing, the project is
         open source. Click the Contact/Help tab to email me.</p>
+      <p>Finally, I'm always working on this site and trying to improve it. I want to make it
+        a high-quality, useful resource for local, Chicago musicians. If you find a bug or
+        have a suggestion for improvement, please don't hesitate to email me.</p>
+      <p><strong>Happy jamming!</strong></p>
     </TabPanel>
     <TabPanel header="Contact/Help">
       <div class="help-tab">
