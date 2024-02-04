@@ -16,7 +16,10 @@
           {{ dateFormatter(event.start_date) }} @ {{ timeFormatter(event.start_date) }}
           <div v-if="mqMobile">
             <strong>{{ event.location }}</strong>
-            <p v-if="mapObject" class="address-line">{{ mapObject.name }}</p>
+            <p v-if="mapObject" class="address-line">
+              {{ mapObject.address_components[0].short_name }}
+              {{ mapObject.address_components[1].short_name }}
+            </p>
           </div>
           <div
             v-if="event.cancelled"
