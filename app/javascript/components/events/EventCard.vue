@@ -332,6 +332,7 @@ h3 {
   .mobile & {
     margin-top: 1em;
     width: 100%;
+    margin-left: 0;
   }
 }
 

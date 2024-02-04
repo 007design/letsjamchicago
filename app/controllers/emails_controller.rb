@@ -18,7 +18,7 @@ class EmailsController < Devise::Mailer
         }
       ],
       'Subject'=> "Let's Jam Chicago - Confirm Registration",
-      'TextPart'=> "http://letsjamchicago.com/confirm/#{token}",
+      'TextPart'=> "Welcome to Let's Jam Chicago!\n\nPlease visit http://letsjamchicago.com/confirm/#{token} to confirm your email address.",
       # 'HTMLPart'=> ''
     }]
     )
@@ -37,7 +37,7 @@ class EmailsController < Devise::Mailer
         }
       ],
       'Subject'=> "Let's Jam Chicago - Reset Password",
-      'TextPart'=> "http://letsjamchicago.com/reset/#{token}",
+      'TextPart'=> "Please visit http://letsjamchicago.com/reset/#{token} to reset your password.",
       # 'HTMLPart'=> ''
     }]
     )
