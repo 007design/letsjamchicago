@@ -320,6 +320,8 @@ h3 {
   border: 1px solid #e2e8f0;
   height: 200px;
   width: 200px;
+  flex: 1 0 auto;
+  margin-left: 1em;
 
   .mobile & {
     margin-top: 1em;
@@ -389,8 +391,9 @@ h3 {
 }
 
 .event-description {
-  flex: 1 0 auto;
+  flex: 1 1 auto;
   word-break: break-word;
+  width: 100%;
 }
 </style>
 
