@@ -8,7 +8,10 @@
           </Chip>
           <div v-if="!mqMobile" class="event-location">
             <strong>{{ event.location }}</strong>
-            <p v-if="mapObject" class="address-line">{{ mapObject.name }}</p>
+            <p v-if="mapObject" class="address-line">
+              {{ mapObject.address_components[0].short_name }}
+              {{ mapObject.address_components[1].short_name }}
+            </p>
           </div>
         </div>
         <div class="event-card-when">
