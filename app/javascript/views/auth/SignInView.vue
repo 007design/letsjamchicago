@@ -33,9 +33,12 @@
 </template>
 
 <script>
+// import axios from 'axios';
 import { mapActions } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
 import { signIn } from '@/services/auth';
+
+// const apiKey = import.meta.env.VITE_GOOGLE_RECAPTCHA_KEY;
 
 export default {
   name: 'SignInView',
@@ -55,6 +58,20 @@ export default {
   methods: {
     ...mapActions(useAuthStore, ['setUser']),
     async doLogin() {
+      // await this.$recaptchaLoaded();
+
+      // const token = await this.$recaptcha('login');
+      // const { riskAnalysis } = await axios.post(`https://recaptchaenterprise.googleapis.com/v1/projects/letsjamchicago/assessments?key=${apiKey}`, {
+      //   event: {
+      //     token,
+      //     siteKey: `${apiKey}`,
+      //     expectedAction: 'login',
+      //   },
+      // });
+      // if (riskAnalysis.score < 0.9) {
+      //   console.log('robot!');
+      // }
+
       try {
         const { user } = await signIn(this.user);
         this.setUser(user);

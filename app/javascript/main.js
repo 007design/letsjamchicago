@@ -42,6 +42,10 @@ import Toast from 'primevue/toast';
 import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';
 
+// import { VueReCaptcha } from 'vue-recaptcha-v3';
+
+// const apiKey = import.meta.env.VITE_GOOGLE_RECAPTCHA_KEY;
+
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
@@ -55,6 +59,7 @@ export default () => {
     app.use(PrimeVue);
     app.use(ConfirmationService);
     app.use(ToastService);
+    // app.use(VueReCaptcha, { siteKey: apiKey });
 
     app.component('Badge', Badge);
     app.component('Button', Button);
