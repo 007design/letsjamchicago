@@ -148,7 +148,7 @@ export default {
 
         const replaced = user.neighborhoods
           ? user.neighborhoods.replace(/\\"/g, '"').replace(/^["|']\[/, '[').replace(/\]["|']$/, ']')
-          : [];
+          : '[]';
 
         this.updatedUser = {
           ...user,
