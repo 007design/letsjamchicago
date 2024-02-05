@@ -21,6 +21,7 @@ import Badge from 'primevue/badge';
 import Button from 'primevue/button';
 import Calendar from 'primevue/calendar';
 import Card from 'primevue/card';
+import Checkbox from 'primevue/checkbox';
 import Chip from 'primevue/chip';
 import Column from 'primevue/column';
 import ConfirmDialog from 'primevue/confirmdialog';
@@ -28,9 +29,12 @@ import DataTable from 'primevue/datatable';
 import Dialog from 'primevue/dialog';
 import Divider from 'primevue/divider';
 import Dropdown from 'primevue/dropdown';
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputText from 'primevue/inputtext';
 import Menu from 'primevue/menu';
 import Message from 'primevue/message';
+import MultiSelect from 'primevue/multiselect';
 import OverlayPanel from 'primevue/overlaypanel';
 import Panel from 'primevue/panel';
 import TabView from 'primevue/tabview';
@@ -38,6 +42,7 @@ import TabPanel from 'primevue/tabpanel';
 import Tag from 'primevue/tag';
 import Textarea from 'primevue/textarea';
 import Toast from 'primevue/toast';
+import Tooltip from 'primevue/tooltip';
 
 import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';
@@ -59,12 +64,15 @@ export default () => {
     app.use(PrimeVue);
     app.use(ConfirmationService);
     app.use(ToastService);
+
+    app.directive('tooltip', Tooltip);
     // app.use(VueReCaptcha, { siteKey: apiKey });
 
     app.component('Badge', Badge);
     app.component('Button', Button);
     app.component('Calendar', Calendar);
     app.component('Card', Card);
+    app.component('Checkbox', Checkbox);
     app.component('Chip', Chip);
     app.component('Column', Column);
     app.component('ConfirmDialog', ConfirmDialog);
@@ -72,9 +80,12 @@ export default () => {
     app.component('Dialog', Dialog);
     app.component('Divider', Divider);
     app.component('Dropdown', Dropdown);
+    app.component('InputGroup', InputGroup);
+    app.component('InputGroupAddon', InputGroupAddon);
     app.component('InputText', InputText);
     app.component('Menu', Menu);
     app.component('Message', Message);
+    app.component('MultiSelect', MultiSelect);
     app.component('OverlayPanel', OverlayPanel);
     app.component('Panel', Panel);
     app.component('TabView', TabView);

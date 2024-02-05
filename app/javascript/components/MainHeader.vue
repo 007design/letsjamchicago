@@ -88,7 +88,7 @@ export default {
           },
         },
         {
-          label: 'Change password',
+          label: 'Account settings',
           command: () => {
             this.$router.push({ name: 'AccountSettings' });
           },

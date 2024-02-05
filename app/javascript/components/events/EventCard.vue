@@ -124,7 +124,7 @@
             @click="doJoinEvent"
           />
         </template>
-        <Tag severity="success">
+        <Tag class="attendee-tag" severity="success" v-tooltip.focus.left="attendees" tabindex="1">
           {{ event.attendee_count }} Going
         </Tag>
       </div>
@@ -166,6 +166,10 @@ export default {
     },
     apiKey() {
       return apiKey;
+    },
+    attendees() {
+      const count = this.event.attendee_count - this.event.attendee_names.length;
+      return `${this.event.attendee_names}${count > 0 ? `,and ${count} other${count > 1 ? 's' : ''}` : ''}`.replace(',', '\n');
     },
     calendarLink() {
       const timezoneOffset = new Date().getTimezoneOffset() / 60;
@@ -352,6 +356,10 @@ h3 {
 .event-card-footer {
   display: flex;
   justify-content: space-between;
+}
+
+.attendee-tag {
+  cursor: pointer;
 }
 
 .event-card-location {

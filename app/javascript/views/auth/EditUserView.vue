@@ -1,98 +1,194 @@
 <template>
   <div class="update-user-view">
-    <Card class="update-user-card">
+    <Card class="preferences-card">
+      <template #content>
+        <div class="flex flex-column gap-1 mb-2">
+          <label for="username" class="text-sm">Your name</label>
+          <InputGroup class="inline-update">
+            <InputText id="username" v-model="updatedUser.name" />
+            <Button
+              v-if="updatedUser.name !== user.name"
+              icon="pi pi-check"
+              severity="success"
+              @click="doUpdateUser"
+            />
+            <Button
+              v-else
+              icon="pi pi-check"
+              severity="success"
+              disabled
+            />
+          </InputGroup>
+        </div>
+        <div class="flex flex-column gap-1 mb-2">
+          <label for="email" class="text-sm">Your email (cannot be changed)</label>
+          <InputText id="email" v-model="user.email" disabled />
+        </div>
+        <div class="flex align-items-top mt-4">
+          <Checkbox
+            v-model="updatedUser.show_attending"
+            inputId="showAttending"
+            :binary="true"
+            @change="doUpdateUser"
+          />
+          <label for="showAttending" class="ml-2">
+            Allow signed-in users to see that I'm attending an event.
+          </label>
+        </div>
+        <div class="flex flex-column gap-1 mt-3">
+          <div class="input-header">
+            <label for="neighborhood" class="text-sm">Your neighborhood(s)</label>
+            <Badge
+              value="?"
+              severity="info"
+              @click="toggleNeighborhoodTooltip"
+            />
+          </div>
+          <MultiSelect
+            v-model="updatedUser.neighborhoods"
+            display="chip"
+            :options="neighborhoods"
+            :show-toggle-all="false"
+            filter
+            placeholder="Select neighborhood(s)"
+            @update:modelValue="doUpdateUser"
+          />
+          <OverlayPanel ref="neighborhoodTooltip">
+            Select a neighborhood to help local musicians find you.
+          </OverlayPanel>
+        </div>
+      </template>
+    </Card>
+    <Panel
+      class="update-password-panel"
+      toggleable
+      collapsed
+    >
       <template #header>
         <h3>Update your password</h3>
       </template>
-      <template #content>
-        <div v-if="!token" class="flex flex-column gap-1 mb-2">
-          <label for="password" class="text-sm">Current password</label>
-          <InputText id="password" type="password" v-model="user.current_password" />
-        </div>
-        <div class="flex flex-column gap-1 mb-2">
-          <label for="newPassword" class="text-sm">New password</label>
-          <InputText id="newPassword" type="password" v-model="user.newPassword" />
-        </div>
-        <div class="flex flex-column gap-1 mb-2">
-          <label for="confirmPassword" class="text-sm">Retype new password</label>
-          <InputText id="confirmPassword" type="password" v-model="confirmPassword" />
-        </div>
-        <Message
-          v-if="alert"
-          :severity="alert.type"
-          class="alert-message"
-          @close="alert = null"
-        >
-          {{ alert.message }}
-        </Message>
-      </template>
-      <template #footer>
-        <div class="footer-buttons">
-          <Button label="Update password" @click="doUpdate" :disabled="!isFormValid" />
-        </div>
-      </template>
-    </Card>
-    <Card class="delete-user-card">
+      <div class="flex flex-column gap-1 mb-2">
+        <label for="password" class="text-sm">Current password</label>
+        <InputText id="password" type="password" v-model="currentPassword" />
+      </div>
+      <div class="flex flex-column gap-1 mb-2">
+        <label for="newPassword" class="text-sm">New password</label>
+        <InputText id="newPassword" type="password" v-model="newPassword" />
+      </div>
+      <div class="flex flex-column gap-1 mb-2">
+        <label for="confirmPassword" class="text-sm">Retype new password</label>
+        <InputText id="confirmPassword" type="password" v-model="confirmPassword" />
+      </div>
+      <Message
+        v-if="alert"
+        :severity="alert.type"
+        class="alert-message"
+        @close="alert = null"
+      >
+        {{ alert.message }}
+      </Message>
+      <div class="footer-buttons">
+        <Button
+          class="update-password-button"
+          label="Update password"
+          @click="doUpdatePassword"
+          :disabled="!isPasswordFormValid"
+        />
+      </div>
+    </Panel>
+    <Panel
+      class="delete-user-panel"
+      toggleable
+      collapsed
+    >
       <template #header>
         <h3>Delete your account</h3>
       </template>
-      <template #content>
-        This cannot be undone!
-      </template>
-      <template #footer>
-        <div class="footer-buttons">
-          <Button class="delete-button" label="Delete" @click="doDelete" />
-        </div>
-      </template>
-    </Card>
+      <p><strong>This cannot be undone!</strong></p>
+      <p>All events you have created will also be deleted
+        and you will be removed from any events you are attending.</p>
+      <div class="footer-buttons">
+        <Button class="delete-button" label="Delete" @click="doDelete" />
+      </div>
+    </Panel>
   </div>
   <ConfirmDialog></ConfirmDialog>
 </template>
 
 <script>
-import { mapActions } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
 import { updateUser, deleteUser, signOut } from '@/services/auth';
+import { neighborhoods } from '@/utils/common';
 
 export default {
   name: 'EditUserView',
-  props: {
-    token: {
-      type: String,
-      default: null,
-    },
-  },
-  data(vm) {
+  data() {
     return {
-      user: {
-        reset_password_token: vm.token,
-      },
+      updatedUser: {},
       alert: null,
+      currentPassword: null,
+      newPassword: null,
       confirmPassword: null,
+      neighborhoods,
     };
   },
   computed: {
-    isFormValid() {
-      return (this.token ? true : this.user.current_password)
-        && this.user.newPassword
-        && this.user.newPassword.length > 5
-        && this.user.newPassword === this.confirmPassword;
+    ...mapState(useAuthStore, ['user']),
+    isPasswordFormValid() {
+      return this.newPassword
+        && this.newPassword.length > 5
+        && this.newPassword === this.confirmPassword;
+    },
+  },
+  watch: {
+    user: {
+      handler() {
+        const { id, ...user } = this.user;
+
+        let replaced = user.neighborhoods.replace(/\\"/g, '"');
+        replaced = replaced.replace(/^["|']\[/, '[').replace(/\]["|']$/, ']');
+
+        this.updatedUser = {
+          ...user,
+          neighborhoods: JSON.parse(replaced),
+        };
+      },
+      immediate: true,
     },
   },
   methods: {
     ...mapActions(useAuthStore, ['setUser']),
-    async doUpdate() {
+    toggleNeighborhoodTooltip(e) {
+      this.$refs.neighborhoodTooltip.toggle(e);
+    },
+    async doUpdateUser() {
       try {
-        const { user } = await updateUser({
+        const user = await updateUser({
+          ...this.updatedUser,
+          neighborhoods: JSON.stringify(this.updatedUser.neighborhoods),
+        });
+        this.setUser(user);
+      } catch {
+        this.alert = {
+          message: 'Could not update your name.',
+          type: 'error',
+        };
+      }
+    },
+    async doUpdatePassword() {
+      try {
+        const user = await updateUser({
           ...this.user,
-          password: this.user.newPassword,
+          current_password: this.currentPassword,
+          password: this.newPassword,
         });
         this.setUser(user);
         this.alert = {
           message: 'Password updated successfully',
           type: 'success',
         };
-      } catch (error) {
+      } catch {
         this.alert = {
           message: 'Could not update your password. Please check your current password and try again.',
           type: 'error',
@@ -136,16 +232,17 @@ export default {
 }
 
 h3 {
-  margin-left: 1em;
+  margin: 0;
 }
 
-.p-button {
+.update-password-button {
   background: #44B6E5;
   border-color: #44B6E5;
 }
 
-.update-user-card,
-.delete-user-card {
+.preferences-card,
+.update-password-panel,
+.delete-user-panel {
   width: 100%;
   max-width: 320px;
   margin-top: 1em;
@@ -155,10 +252,26 @@ h3 {
   }
 }
 
+.input-header {
+  .p-badge {
+    cursor: pointer;
+  }
+}
+
 .delete-button {
   color: white;
   background: red;
   border-color: red;
+}
+
+.inline-update {
+  input {
+    flex: 1 0 auto;
+  }
+  button {
+    flex: 0;
+    padding: 0 .5em;
+  }
 }
 
 .alert-message {

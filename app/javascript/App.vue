@@ -10,7 +10,7 @@
 
 <script>
 import { mapActions, mapState } from 'pinia';
-import { setSignedIn } from '@/services/auth';
+// import { setSignedIn } from '@/services/auth';
 import { useAuthStore } from '@/stores/auth';
 import { useEventsStore } from '@/stores/events';
 import MainHeader from '@/components/MainHeader.vue';
@@ -46,15 +46,15 @@ export default {
       },
     };
   },
-  async created() {
-    if (!this.user) {
-      try {
-        await setSignedIn();
-      } catch {
-        // User not logged in
-      }
-    }
-  },
+  // async created() {
+  //   if (!this.user) {
+  //     try {
+  //       await setSignedIn();
+  //     } catch {
+  //       // User not logged in
+  //     }
+  //   }
+  // },
   computed: {
     ...mapState(useAuthStore, ['user']),
     isMobile() {

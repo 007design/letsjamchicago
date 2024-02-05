@@ -1,4 +1,5 @@
 import { setSignedIn } from '@/services/auth';
+import { useAuthStore } from '@/stores/auth';
 
 /**
  * Direct user to sign in page depending on if user is authenticated and confirmed
@@ -18,6 +19,20 @@ async function requireAuth(to, from, next) {
   }
 }
 
+async function doGetUser(to, from, next) {
+  const authStore = useAuthStore();
+
+  if (!authStore.user) {
+    try {
+      await setSignedIn();
+    } finally {
+      next();
+    }
+  } else {
+    next();
+  }
+}
+
 export const routes = [
   {
     path: '/',
@@ -26,11 +41,13 @@ export const routes = [
       {
         path: '',
         name: 'Home',
+        beforeEnter: doGetUser,
         component: () => import('@/views/events/UpcomingEventsView.vue'),
       },
       {
         path: 'about',
         name: 'About',
+        beforeEnter: doGetUser,
         component: () => import('@/views/AboutView.vue'),
       },
       {
@@ -74,7 +91,7 @@ export const routes = [
       {
         path: 'reset/:token',
         name: 'ResetPassword',
-        component: () => import('@/views/auth/EditUserView.vue'),
+        component: () => import('@/views/auth/ResetPasswordView.vue'),
         props: true,
       },
     ],
