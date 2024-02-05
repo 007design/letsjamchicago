@@ -9,7 +9,7 @@ const env = loadEnv('development', process.cwd(), '');
 export default defineConfig({
   build: {
     target: 'es2022',
-    sourcemap: 'hidden',
+    // sourcemap: 'hidden',
   },
   css: {
     preprocessorOptions: {
