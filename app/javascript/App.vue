@@ -5,6 +5,7 @@
     <TermsModal v-model:visible="isTermsDialogVisible" />
     <PolicyModal v-model:visible="isPolicyDialogVisible" />
     <MainFooter />
+    <ConfirmDialog></ConfirmDialog>
   </div>
 </template>
 

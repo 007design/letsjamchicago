@@ -12,6 +12,7 @@
     is-current-events
     @editEvent="doEditEvent"
     @deleteEvent="doDeleteEvent"
+    @cancelEvent="doCancelEvent"
   />
   <template v-if="pastEvents.length">
     <Divider />
@@ -23,14 +24,13 @@
       @cloneEvent="doCloneEvent"
     />
   </template>
-  <ConfirmDialog></ConfirmDialog>
 </template>
 
 <script>
 import { mapActions, mapState } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
 import { useEventsStore } from '@/stores/events';
-import { getEvents, deleteEvent } from '@/services/events';
+import { getEvents, deleteEvent, cancelEvent } from '@/services/events';
 import EventsList from '@/components/events/EventsList.vue';
 
 export default {
@@ -72,6 +72,30 @@ export default {
     },
     doEditEvent(event) {
       this.$router.push({ name: 'EditEvent', params: { eventId: event.id } });
+    },
+    doCancelEvent() {
+      this.$confirm.require({
+        message: 'Are you sure you want to cancel this event? This cannot be undone!',
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        rejectClass: 'p-button-secondary p-button-outlined',
+        rejectLabel: 'Go back',
+        acceptClass: 'p-button-danger delete-button',
+        acceptLabel: 'Cancel event',
+        accept: async () => {
+          try {
+            await cancelEvent(this.event);
+            this.loadEvents();
+          } catch {
+            this.$toast.add({
+              severity: 'danger',
+              summary: 'Error',
+              detail: 'Could not cancel event. Please sign in again.',
+              life: 3000,
+            });
+          }
+        },
+      });
     },
     doCloneEvent(event) {
       this.$router.push({ name: 'CloneEvent', params: { eventId: event.id }, query: { clone: true } });

@@ -112,7 +112,6 @@
       </div>
     </Panel>
   </div>
-  <ConfirmDialog></ConfirmDialog>
 </template>
 
 <script>

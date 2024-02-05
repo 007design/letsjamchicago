@@ -143,7 +143,6 @@
       </div>
     </template>
   </Card>
-  <ConfirmDialog></ConfirmDialog>
 </template>
 
 <script>
@@ -257,7 +256,7 @@ export default {
         map.setCenter(this.mapObject.geometry.location);
       }
     },
-    async doCancelEvent() {
+    doCancelEvent() {
       this.$confirm.require({
         message: 'Are you sure you want to cancel this event? This cannot be undone!',
         header: 'Confirmation',

@@ -98,7 +98,6 @@
       </div>
     </template>
   </Card>
-  <ConfirmDialog></ConfirmDialog>
   <EventPreviewModal v-model:visible="showPreview" :event="previewEvent" />
 </template>
 
