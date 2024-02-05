@@ -188,6 +188,10 @@ export default {
           message: 'Password updated successfully',
           type: 'success',
         };
+
+        this.currentPassword = null;
+        this.newPassword = null;
+        this.confirmPassword = null;
       } catch {
         this.alert = {
           message: 'Could not update your password. Please check your current password and try again.',
