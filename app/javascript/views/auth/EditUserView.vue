@@ -144,16 +144,18 @@ export default {
   watch: {
     user: {
       handler() {
-        const { id, ...user } = this.user;
+        if (this.user) {
+          const { id, ...user } = this.user;
 
-        const replaced = user.neighborhoods
-          ? user.neighborhoods.replace(/\\"/g, '"').replace(/^["|']\[/, '[').replace(/\]["|']$/, ']')
-          : '[]';
+          const replaced = user.neighborhoods
+            ? user.neighborhoods.replace(/\\"/g, '"').replace(/^["|']\[/, '[').replace(/\]["|']$/, ']')
+            : '[]';
 
-        this.updatedUser = {
-          ...user,
-          neighborhoods: JSON.parse(replaced),
-        };
+          this.updatedUser = {
+            ...user,
+            neighborhoods: JSON.parse(replaced),
+          };
+        }
       },
       immediate: true,
     },
