@@ -61,14 +61,8 @@ export async function getUser() {
  */
 export async function setSignedIn() {
   const authStore = useAuthStore();
-
-  try {
-    const user = await getUser();
-    authStore.setUser(user);
-  } catch {
-    deleteCookie('auth');
-    authStore.$reset();
-  }
+  const user = await getUser();
+  authStore.setUser(user);
 }
 
 /**

@@ -1,5 +1,6 @@
 import { setSignedIn } from '@/services/auth';
 import { useAuthStore } from '@/stores/auth';
+import { deleteCookie } from '@/utils/cookies';
 
 /**
  * Direct user to sign in page depending on if user is authenticated and confirmed
@@ -13,6 +14,9 @@ async function requireAuth(to, from, next) {
     await setSignedIn();
     next();
   } catch {
+    deleteCookie('auth');
+    const authStore = useAuthStore();
+    authStore.$reset();
     next({
       name: 'Home',
     });
