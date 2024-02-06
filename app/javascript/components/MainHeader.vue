@@ -55,7 +55,6 @@ import { mapState } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
 import mq from '@/utils/mq';
 import { signOut } from '@/services/auth';
-import { deleteCookie } from '@/utils/cookies';
 
 export default {
   name: 'MainHeader',
@@ -122,9 +121,6 @@ export default {
       try {
         await signOut();
       } finally {
-        const authStore = useAuthStore();
-        deleteCookie('auth');
-        authStore.$reset();
         document.location.href = '/';
       }
     },

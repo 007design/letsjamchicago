@@ -15,11 +15,10 @@ export async function signOut() {
   const authStore = useAuthStore();
 
   try {
-    await doDelete('signout');
-  } catch {
     deleteCookie('auth');
     authStore.$reset();
-  } finally {
+    await doDelete('signout');
+  } catch {
     deleteCookie('auth');
     authStore.$reset();
   }
