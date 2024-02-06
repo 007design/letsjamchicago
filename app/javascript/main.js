@@ -32,6 +32,7 @@ import Dropdown from 'primevue/dropdown';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputText from 'primevue/inputtext';
+import Listbox from 'primevue/listbox';
 import Menu from 'primevue/menu';
 import Message from 'primevue/message';
 import MultiSelect from 'primevue/multiselect';
@@ -83,6 +84,7 @@ export default () => {
     app.component('InputGroup', InputGroup);
     app.component('InputGroupAddon', InputGroupAddon);
     app.component('InputText', InputText);
+    app.component('Listbox', Listbox);
     app.component('Menu', Menu);
     app.component('Message', Message);
     app.component('MultiSelect', MultiSelect);

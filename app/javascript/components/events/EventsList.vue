@@ -7,26 +7,18 @@
   >
     <template #footer>
       <template v-if="isCurrentEvents">
-        <div class="button-group">
-          <Button
-            class="edit-button"
-            severity="secondary"
-            label="Edit event"
-            @click="() => $emit('editEvent', event)"
-          />
-          <Button
-            class="cancel-event-button"
-            severity="danger"
-            link
-            label="Cancel event"
-            @click="() => $emit('cancelEvent', event)"
-          />
-        </div>
         <Button
-          class="delete-button"
-          label="Delete event"
-          severity="danger"
-          @click="() => $emit('deleteEvent', event)"
+          class="edit-event-button"
+          :size="mqMobile ? 'small': ''"
+          severity="secondary"
+          label="Manage event"
+          @click="() => $router.push({
+            name: 'ShowEvent',
+            params: {
+              eventId: event.id,
+              isManage: true
+            }
+          })"
         />
       </template>
       <template v-else>

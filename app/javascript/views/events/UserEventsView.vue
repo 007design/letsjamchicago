@@ -1,5 +1,5 @@
 <template>
-  <h2>Upcoming events</h2>
+  <h2>Upcoming created events</h2>
   <Card v-if="!currentEvents.length" class="empty-card">
     <template #content>
       <p>You have no upcoming events.</p>
@@ -16,7 +16,7 @@
   />
   <template v-if="pastEvents.length">
     <Divider />
-    <h2>Past events</h2>
+    <h2>Past created events</h2>
     <EventsList
       :events="pastEvents"
       @editEvent="doEditEvent"
@@ -35,6 +35,7 @@ import EventsList from '@/components/events/EventsList.vue';
 
 export default {
   name: 'UserEvents',
+  inject: ['loadEvents'],
   components: {
     EventsList,
   },
@@ -42,34 +43,25 @@ export default {
     ...mapState(useEventsStore, ['events']),
     ...mapState(useAuthStore, ['user']),
     currentEvents() {
-      return this.events.filter(({ start_date: date }) => new Date(date) >= new Date());
+      return this.events.filter((
+        { owned, start_date: date },
+      ) => owned && new Date(date) >= new Date());
     },
     pastEvents() {
-      return this.events.filter(({ start_date: date }) => new Date(date) < new Date());
+      return this.events.filter((
+        { owned, start_date: date },
+      ) => owned && new Date(date) < new Date());
     },
   },
-  async created() {
+  async mounted() {
+    const data = await getEvents({ user: this.user });
+    this.setEvents(data);
+  },
+  unmounted() {
     this.loadEvents();
   },
   methods: {
     ...mapActions(useEventsStore, ['setEvents']),
-    /**
-     * Load events from the server.
-     */
-    async loadEvents() {
-      try {
-        const data = await getEvents({ user: this.user });
-
-        this.setEvents(data);
-      } catch (error) {
-        this.$toast.add({
-          severity: 'danger',
-          summary: 'Error',
-          detail: 'Could not load events. Please sign in again.',
-          life: 3000,
-        });
-      }
-    },
     doEditEvent(event) {
       this.$router.push({ name: 'EditEvent', params: { eventId: event.id } });
     },

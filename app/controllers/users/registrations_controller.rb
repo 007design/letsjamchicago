@@ -19,7 +19,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       set_minimum_password_length
       # respond_with resource
     end
-    render json: resource.to_json(:only => ['id', 'name', 'email', 'neighborhoods', 'show_attending'])
+    render json: resource.to_json(:only => ['id', 'name', 'email', 'neighborhoods', 'show_attending', 'findable'])
   end;
 
   protected

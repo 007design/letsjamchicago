@@ -45,6 +45,13 @@ export const routes = [
         component: () => import('@/views/events/UpcomingEventsView.vue'),
       },
       {
+        path: '/event/:eventId',
+        name: 'ShowEvent',
+        beforeEnter: doGetUser,
+        component: () => import('@/views/events/ShowEventView.vue'),
+        props: true,
+      },
+      {
         path: 'about',
         name: 'About',
         beforeEnter: doGetUser,

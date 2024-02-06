@@ -61,7 +61,7 @@ export default {
             ...this.event,
             map: this.event.map ? JSON.stringify(this.event.map) : '',
           });
-          document.location.href = '/';
+          document.location.href = `/event/${this.event.id}`;
         } catch {
           this.isDialogVisible = false;
           this.$toast.add({
@@ -73,11 +73,11 @@ export default {
         }
       } else {
         try {
-          await newEvent({
+          const event = await newEvent({
             ...this.event,
             map: this.event.map ? JSON.stringify(this.event.map) : '',
           });
-          document.location.href = '/';
+          document.location.href = `/event/${event.id}`;
         } catch {
           this.isDialogVisible = false;
           this.$toast.add({

@@ -25,7 +25,7 @@ class EmailsController < Devise::Mailer
 <meta charset=\"UTF-8\">
 <title>Let's Jam Chicago Password Reset</title>
 </head>
-<body style=\"font-family:sans-serif;margin:0;\">
+<body style=\"color:black;font-family:sans-serif;margin:0;\">
 <table width=\"100%\">
 <tr>
 <td style=\"background:#44B6E5;color:white;font-weight:600;font-size:24px;padding:10px 10px 0;\">
@@ -38,9 +38,9 @@ class EmailsController < Devise::Mailer
 <tr>
 <td>
 <p><strong>Welcome to Let's Jam Chicago!</strong></p>
-<p>Please click the button below to reset your password.</p>
-<a href=\"http://letsjamchicago.com/confirm/#{token}\" style=\"text-decoration:none;background:#44B6E5;color:white;font-weight:600;font-size:16px;padding:10px;border:none;border-radius:5px;\">Reset password</a>
-<p>If you are having trouble, please visit <a style=\"color:#44B6E5\" href=\"http://letsjamchicago.com/confirm/#{token}\">http://letsjamchicago.com/confirm/#{token}</a>.</p>
+<p>Please click the button below to confirm your email address.</p>
+<a href=\"http://letsjamchicago.com/confirm/#{token}\" style=\"text-decoration:none;background:#44B6E5;color:white;font-weight:600;font-size:16px;padding:10px;border:none;border-radius:5px;\">Confirm email</a>
+<p>If you are having trouble, please visit <a style=\"color:#44B6E5\" href=\"http://letsjamchicago.com/confirm/#{token}\">http://letsjamchicago.com/confirm/#{token}</a></p>
 <p><strong>Happy jamming!</strong></p>
 </td>
 </tr>
@@ -71,7 +71,7 @@ class EmailsController < Devise::Mailer
 <meta charset=\"UTF-8\">
 <title>Let's Jam Chicago Password Reset</title>
 </head>
-<body style=\"font-family:sans-serif;margin:0;\">
+<body style=\"color:black;font-family:sans-serif;margin:0;\">
 <table width=\"100%\">
 <tr>
 <td style=\"background:#44B6E5;color:white;font-weight:600;font-size:24px;padding:10px 10px 0;\">
@@ -85,7 +85,7 @@ class EmailsController < Devise::Mailer
 <td>
 <p>Please click the button below to reset your password.</p>
 <a href=\"http://letsjamchicago.com/reset/#{token}\" style=\"text-decoration:none;background:#44B6E5;color:white;font-weight:600;font-size:16px;padding:10px;border:none;border-radius:5px;\">Reset password</a>
-<p>If you are having trouble, please visit <a style=\"color:#44B6E5\" href=\"http://letsjamchicago.com/reset/#{token}\">http://letsjamchicago.com/reset/#{token}</a>.</p>
+<p>If you are having trouble, please visit <a style=\"color:#44B6E5\" href=\"http://letsjamchicago.com/reset/#{token}\">http://letsjamchicago.com/reset/#{token}</a></p>
 <p><strong>Happy jamming!</strong></p>
 </td>
 </tr>

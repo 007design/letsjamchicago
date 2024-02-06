@@ -31,7 +31,7 @@ export default {
     ...mapState(useEventsStore, ['events']),
     ...mapState(useAuthStore, ['user']),
   },
-  async created() {
+  async mounted() {
     this.loadEvents();
   },
   methods: {

@@ -65,64 +65,79 @@
         </div>
       </div>
     </template>
-    <template #footer v-if="isPreview">
+    <template #footer>
       <div class="event-card-footer">
-        <slot name="footer" />
-      </div>
-    </template>
-    <template #footer v-else>
-      <div class="event-card-footer">
-        <template v-if="!authenticated">
-          <Button
-            class="sign-in-button"
-            :size="mqMobile ? 'small': ''"
-            label="Sign in to RSVP"
-            @click="() => $router.push({ name: 'SignIn' })"
-          />
-        </template>
-        <template v-else-if="event.owned">
-          <Button
-            v-if="event.cancelled"
-            class="edit-event-button"
-            :size="mqMobile ? 'small': ''"
-            label="Clone event"
-            @click="doCloneEvent"
-          />
-          <div v-else class="button-group">
-            <Button
-              class="edit-event-button"
-              :size="mqMobile ? 'small': ''"
-              severity="secondary"
-              label="Edit event"
-              @click="doEditEvent"
-            />
-            <Button
-              class="cancel-event-button"
-              :size="mqMobile ? 'small': ''"
-              severity="danger"
-              link
-              label="Cancel event"
-              @click="doCancelEvent"
-            />
-          </div>
-        </template>
-        <template v-else-if="event.attending">
-          <Button
-            class="decline-button"
-            :size="mqMobile ? 'small': ''"
-            severity="danger"
-            label="Decline event"
-            @click="doLeaveEvent"
-          />
+        <template v-if="isPreview">
+          <slot name="footer" />
         </template>
         <template v-else>
-          <Button
-            class="attend-button"
-            :size="mqMobile ? 'small': ''"
-            severity="success"
-            label="Attend event"
-            @click="doJoinEvent"
-          />
+          <template v-if="!authenticated">
+            <Button
+              class="sign-in-button"
+              :size="mqMobile ? 'small': ''"
+              label="Sign in to RSVP"
+              @click="() => $router.push({ name: 'SignIn' })"
+            />
+          </template>
+          <template v-else-if="event.owned">
+            <Button
+              v-if="event.cancelled"
+              class="edit-event-button"
+              :size="mqMobile ? 'small': ''"
+              label="Clone event"
+              @click="doCloneEvent"
+            />
+            <div v-else-if="isManage" class="button-group">
+              <Button
+                class="edit-event-button"
+                :size="mqMobile ? 'small': ''"
+                severity="secondary"
+                label="Edit event"
+                @click="doEditEvent"
+              />
+              <Button
+                class="cancel-event-button"
+                :size="mqMobile ? 'small': ''"
+                severity="danger"
+                link
+                label="Cancel event"
+                @click="doCancelEvent"
+              />
+            </div>
+            <div v-else>
+              <Button
+                class="edit-event-button"
+                :size="mqMobile ? 'small': ''"
+                severity="secondary"
+                label="Manage event"
+                @click="() => $router.push({
+                  name: 'ShowEvent',
+                  params: {
+                    eventId: event.id,
+                    isManage: true
+                  }
+                })"
+              />
+            </div>
+          </template>
+          <template v-else-if="event.attending">
+            <Button
+              class="decline-button"
+              :size="mqMobile ? 'small': ''"
+              severity="danger"
+              label="Decline event"
+              @click="doLeaveEvent"
+            />
+          </template>
+          <template v-else>
+            <Button
+              class="attend-button"
+              :size="mqMobile ? 'small': ''"
+              severity="success"
+              label="Attend event"
+              @click="doJoinEvent"
+            />
+          </template>
         </template>
         <Tag
           v-if="authenticated"
@@ -170,6 +185,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isManage: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapState(useAuthStore, ['user']),
@@ -212,7 +231,7 @@ export default {
     },
     mapObject() {
       try {
-        let replaced = this.event.map.replace(/\\"/g, '"');
+        let replaced = this.event.map.replace(/\\+"/g, '"');
         replaced = replaced.replace(/^["|']\{/, '{').replace(/\}["|']$/, '}');
         const mapData = JSON.parse(replaced);
         return mapData;

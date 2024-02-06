@@ -12,6 +12,7 @@
 <script>
 import { mapActions, mapState } from 'pinia';
 // import { setSignedIn } from '@/services/auth';
+import { getEvents } from '@/services/events';
 import { useAuthStore } from '@/stores/auth';
 import { useEventsStore } from '@/stores/events';
 import MainHeader from '@/components/MainHeader.vue';
@@ -31,6 +32,7 @@ export default {
   mixins: [mq],
   provide() {
     return {
+      loadEvents: this.loadEvents,
       showTermsDialog: this.showTermsDialog,
       showPolicyDialog: this.showPolicyDialog,
     };
@@ -47,15 +49,6 @@ export default {
       },
     };
   },
-  // async created() {
-  //   if (!this.user) {
-  //     try {
-  //       await setSignedIn();
-  //     } catch {
-  //       // User not logged in
-  //     }
-  //   }
-  // },
   computed: {
     ...mapState(useAuthStore, ['user']),
     isMobile() {
@@ -69,6 +62,24 @@ export default {
     },
     showPolicyDialog() {
       this.isPolicyDialogVisible = true;
+    },
+    /**
+     * Load events from the server.
+     */
+    async loadEvents() {
+      try {
+        const data = await getEvents({ neighborhood: this.neighborhood });
+        console.log('get');
+
+        this.setEvents(data);
+      } catch (error) {
+        this.$toast.add({
+          severity: 'danger',
+          summary: 'Error',
+          detail: 'Could not load events.',
+          life: 3000,
+        });
+      }
     },
   },
 };

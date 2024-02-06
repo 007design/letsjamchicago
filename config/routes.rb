@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   # get 'users/*path', to: 'letsjam#index'
-  get 'rails/*path', to: 'letsjam#index'
+  # get 'rails/*path', to: 'letsjam#index'
 
   devise_scope :user do
     post 'signup', to: 'users/registrations#create'
@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     patch 'api/v1/users', to: 'users/registrations#update'
     delete 'api/v1/users', to: 'users/registrations#destroy'
     post 'forgot', to: 'users/passwords#create'
-    get 'confirm/:confirmation_token', to: 'users/confirmations#show'
+    get '/confirm/:confirmation_token', to: 'users/confirmations#show', as: :confirm_user
     get 'reset/:reset_password_token', to: 'users/passwords#edit'
     put 'reset', to: 'users/passwords#update'
   end
@@ -29,18 +29,20 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   post 'contact', to: 'letsjam#contact'
+  get 'api/v1/users/nearby', to: 'api/v1/users#nearby'
 
   # Defines the root path route ("/")
   root "letsjam#index"
 
   namespace :api do
     namespace :v1 do
-      resources :users, only: [:index] do
+      resources :users do
         get 'attending', on: :member
       end
       resources :events do
         get 'attend', on: :member
         delete 'decline', on: :member
+        post 'invite', on: :member
       end
     end
   end

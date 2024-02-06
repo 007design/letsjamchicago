@@ -33,6 +33,6 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   protected
 
   def respond_with_navigational(*args, &block)
-    redirect_to '/'
+    redirect_to '/account'
   end
 end

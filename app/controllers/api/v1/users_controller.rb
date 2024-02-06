@@ -2,7 +2,7 @@ class Api::V1::UsersController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    render json: current_user.to_json(:only => ['id', 'name', 'email', 'neighborhoods', 'show_attending'])
+    render json: current_user.to_json(:only => ['id', 'name', 'email', 'neighborhoods', 'show_attending', 'findable'])
   end
 
   def attending    
@@ -17,11 +17,14 @@ class Api::V1::UsersController < ApplicationController
     render json: events.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date', 'cancelled', 'attendee_count', 'owned', 'attending'])
   end
 
-  # def update
-  #   if params[:current_password].blank?
-  #     resource.update_without_password(params.except(:current_password))
-  #    else
-  #      resource.update_with_password(params)
-  #    end
-  # end
+  def nearby
+    if (params[:n])
+      users = User.where("findable = true and neighborhoods like ?", "%" + params[:n].to_s + "%")
+      users = users.where('id != ?', current_user.id)
+      render json: users.to_json(:only => ['id', 'name'])
+    else
+      render json: []
+    end
+
+  end
 end

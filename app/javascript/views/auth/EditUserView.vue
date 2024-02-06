@@ -57,6 +57,17 @@
             Select a neighborhood to help local musicians find you.
           </OverlayPanel>
         </div>
+        <div class="flex align-items-top mt-4">
+          <Checkbox
+            v-model="updatedUser.findable"
+            inputId="findable"
+            :binary="true"
+            @change="doUpdateUser"
+          />
+          <label for="findable" class="ml-2">
+            Allow signed-in users to<br />invite me to events in my neighborhood(s).
+          </label>
+        </div>
       </template>
     </Card>
     <Panel

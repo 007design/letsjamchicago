@@ -34,7 +34,6 @@
 
 <script>
 import { mapActions, mapState } from 'pinia';
-import { getEvents } from '@/services/events';
 import { useAuthStore } from '@/stores/auth';
 import { useEventsStore } from '@/stores/events';
 import EventCard from '@/components/events/EventCard.vue';
@@ -46,11 +45,7 @@ export default {
     EventCard,
     NeighborhoodDropdown,
   },
-  provide() {
-    return {
-      loadEvents: this.loadEvents,
-    };
-  },
+  inject: ['loadEvents'],
   data() {
     return {
       neighborhood: null,
@@ -73,23 +68,6 @@ export default {
   },
   methods: {
     ...mapActions(useEventsStore, ['setEvents']),
-    /**
-     * Load events from the server.
-     */
-    async loadEvents() {
-      try {
-        const data = await getEvents({ neighborhood: this.neighborhood });
-
-        this.setEvents(data);
-      } catch (error) {
-        this.$toast.add({
-          severity: 'danger',
-          summary: 'Error',
-          detail: 'Could not load events.',
-          life: 3000,
-        });
-      }
-    },
     filterBy(neighborhood) {
       this.neighborhood = neighborhood;
     },

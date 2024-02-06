@@ -9,6 +9,7 @@ class User < ApplicationRecord
 
   has_many :events, dependent: :destroy
   has_many :attendees, dependent: :destroy
+  has_many :invitations, dependent: :destroy
   
   validates :email, presence: true, uniqueness: true
 end
