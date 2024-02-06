@@ -97,7 +97,7 @@ class Api::V1::EventsController < ApplicationController
           ) as attending"
         )
     event = event.where('events.id = ?', params[:id])
-    event = event.group('events.id')
+    event = event.group('events.id', 'invitations.event_id')
     .first
       
     if user_id > 0
