@@ -7,4 +7,4 @@
 - Email attendees when event is cancelled
 - Let organizers contact me (anonymously) about events I'm attending
 - Better "profile" with instruments played, etc.
-- Clean up commented code and unnecessary files
+- Clean up code

@@ -35,7 +35,6 @@ import InputText from 'primevue/inputtext';
 import Listbox from 'primevue/listbox';
 import Menu from 'primevue/menu';
 import Message from 'primevue/message';
-import MultiSelect from 'primevue/multiselect';
 import OverlayPanel from 'primevue/overlaypanel';
 import Panel from 'primevue/panel';
 import TabView from 'primevue/tabview';
@@ -87,7 +86,6 @@ export default () => {
     app.component('Listbox', Listbox);
     app.component('Menu', Menu);
     app.component('Message', Message);
-    app.component('MultiSelect', MultiSelect);
     app.component('OverlayPanel', OverlayPanel);
     app.component('Panel', Panel);
     app.component('TabView', TabView);

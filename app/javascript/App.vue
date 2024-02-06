@@ -11,7 +11,6 @@
 
 <script>
 import { mapActions, mapState } from 'pinia';
-// import { setSignedIn } from '@/services/auth';
 import { getEvents } from '@/services/events';
 import { useAuthStore } from '@/stores/auth';
 import { useEventsStore } from '@/stores/events';
@@ -69,7 +68,6 @@ export default {
     async loadEvents() {
       try {
         const data = await getEvents({ neighborhood: this.neighborhood });
-        console.log('get');
 
         this.setEvents(data);
       } catch (error) {

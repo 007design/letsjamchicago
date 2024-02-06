@@ -44,15 +44,27 @@
               @click="toggleNeighborhoodTooltip"
             />
           </div>
-          <MultiSelect
+          <Listbox
             v-model="updatedUser.neighborhoods"
-            display="chip"
-            :options="neighborhoods"
-            :show-toggle-all="false"
+            :options="sortedNeighborhoods"
+            option-label="name"
+            option-value="name"
             filter
-            placeholder="Select neighborhood(s)"
+            multiple
+            list-style="max-height:250px"
             @update:modelValue="doUpdateUser"
-          />
+          >
+            <template #option="slotProps">
+                <div class="flex align-items-center">
+                    <Checkbox
+                      v-model="slotProps.option.checked"
+                      class="mr-1"
+                      :binary="true"
+                    />
+                    <div>{{ slotProps.option.name }}</div>
+                </div>
+            </template>
+          </Listbox>
           <OverlayPanel ref="neighborhoodTooltip">
             Select a neighborhood to help local musicians find you.
           </OverlayPanel>
@@ -135,12 +147,11 @@ export default {
   name: 'EditUserView',
   data() {
     return {
-      updatedUser: {},
+      updatedUser: null,
       alert: null,
       currentPassword: null,
       newPassword: null,
       confirmPassword: null,
-      neighborhoods,
     };
   },
   computed: {
@@ -149,6 +160,16 @@ export default {
       return this.newPassword
         && this.newPassword.length > 5
         && this.newPassword === this.confirmPassword;
+    },
+    sortedNeighborhoods() {
+      return neighborhoods.map((n) => ({
+        name: n,
+        checked: !!this.updatedUser?.neighborhoods?.find((hood) => hood === n),
+      })).sort((a, b) => {
+        if (a.checked && !b.checked) return -1;
+        if (b.checked && !a.checked) return 1;
+        return 0;
+      });
     },
   },
   watch: {
@@ -177,9 +198,11 @@ export default {
     },
     async doUpdateUser() {
       try {
+        const parsedNeighborhoods = this.sortedNeighborhoods
+          .filter(({ checked }) => checked).map(({ name }) => name);
         const user = await updateUser({
           ...this.updatedUser,
-          neighborhoods: JSON.stringify(this.updatedUser.neighborhoods),
+          neighborhoods: JSON.stringify(parsedNeighborhoods),
         });
         this.setUser(user);
       } catch {
