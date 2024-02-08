@@ -31,6 +31,10 @@ export default {
     EventCard,
   },
   props: {
+    isNewEvent: {
+      type: Boolean,
+      default: false,
+    },
     visible: {
       type: Boolean,
       default: false,
@@ -55,23 +59,7 @@ export default {
       this.$emit('update:visible', false);
     },
     async doSave() {
-      if (this.event.id) {
-        try {
-          await updateEvent({
-            ...this.event,
-            map: this.event.map ? JSON.stringify(this.event.map) : '',
-          });
-          document.location.href = `/event/${this.event.id}`;
-        } catch {
-          this.isDialogVisible = false;
-          this.$toast.add({
-            severity: 'danger',
-            summary: 'Error',
-            detail: 'Could not update event.',
-            life: 3000,
-          });
-        }
-      } else {
+      if (this.isNewEvent) {
         try {
           const event = await newEvent({
             ...this.event,
@@ -84,6 +72,22 @@ export default {
             severity: 'danger',
             summary: 'Error',
             detail: 'Could not create event.',
+            life: 3000,
+          });
+        }
+      } else {
+        try {
+          await updateEvent({
+            ...this.event,
+            map: this.event.map ? JSON.stringify(this.event.map) : '',
+          });
+          document.location.href = `/event/${this.event.id}`;
+        } catch {
+          this.isDialogVisible = false;
+          this.$toast.add({
+            severity: 'danger',
+            summary: 'Error',
+            detail: 'Could not update event.',
             life: 3000,
           });
         }

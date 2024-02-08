@@ -1,5 +1,18 @@
 <template>
   <TabView class="about-tabs">
+    <TabPanel header="Help">
+      <h3>What is Let's Jam Chicago?</h3>
+      <p>This site is an effort to connect local,
+        Chicago musicians and help them coordinate jam sessions.</p>
+      <h3>How does it work?</h3>
+      <p>When you create an event you will be able to invite other users
+        who have indicated that they are in your neighborhood. So, it's
+        important to specify on the Account settings page what neighborhood(s) you are in.</p>
+      <h3>What does it not do?</h3>
+      <p>In the interest of privacy, you can not see other users
+        names without creating an event. However, I am continually working
+        to improve the site and add more features. So let me know if you have an idea.</p>
+    </TabPanel>
     <TabPanel header="About">
       <p>This site is, and will always be, free to use and ad-free.
         I created it primarily to find other, local musicians to jam with.</p>
@@ -9,13 +22,13 @@
       <p>I'll never sell or disclose your information, email address, etc.
         I'm not out to make any money, I just want to help musicians find each other so we can
         all become better, happier musicians. If you feel like contributing, the project is
-        open source. Click the Contact/Help tab to email me.</p>
+        open source. Click the Contact tab to email me.</p>
       <p>Finally, I'm always working on this site and trying to improve it. I want to make it
         a high-quality, useful resource for local, Chicago musicians. If you find a bug or
         have a suggestion for improvement, please don't hesitate to email me.</p>
       <p><strong>Happy jamming!</strong></p>
     </TabPanel>
-    <TabPanel header="Contact/Help">
+    <TabPanel header="Contact">
       <div class="help-tab">
         <Message
           v-if="alert"
@@ -145,8 +158,10 @@ export default {
   }
 }
 
-h3 {
-  margin-left: 1em;
+.help-tab {
+  h3 {
+    margin-left: 1em;
+  }
 }
 
 .footer-buttons {

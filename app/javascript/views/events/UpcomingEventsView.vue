@@ -1,4 +1,10 @@
 <template>
+  <Message
+    class="new-message"
+    :closable="false"
+  >
+    New here? Check out the <a href="about">help</a>.
+  </Message>
   <div class="upcoming-events-header">
     <h2>Upcoming events</h2>
     <NeighborhoodDropdown v-model="neighborhood" showClear />
@@ -92,6 +98,24 @@ h2 {
     h2 {
       margin-bottom: .5em;
     }
+  }
+}
+
+.new-message {
+  border-color: #44B6E5;
+  color: #44B6E5;
+
+  a:link,
+  a:visited {
+    color: #44B6E5;
+  }
+
+  :deep(.p-message-icon) {
+    color: #44B6E5;
+  }
+
+  :deep(.p-message-wrapper) {
+    justify-content: center;
   }
 }
 

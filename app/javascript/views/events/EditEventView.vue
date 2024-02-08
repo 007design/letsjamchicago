@@ -98,7 +98,11 @@
       </div>
     </template>
   </Card>
-  <EventPreviewModal v-model:visible="showPreview" :event="previewEvent" />
+  <EventPreviewModal
+    v-model:visible="showPreview"
+    :event="previewEvent"
+    :is-new-event="clone"
+  />
 </template>
 
 <script>

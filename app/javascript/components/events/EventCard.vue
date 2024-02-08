@@ -201,7 +201,7 @@ export default {
     attendees() {
       if (this.authenticated && this.event.attendee_names) {
         const count = this.event.attendee_count - this.event.attendee_names.length;
-        return `${this.event.attendee_names}${count > 0 ? `,and ${count} other${count > 1 ? 's' : ''}` : ''}`.replace(',', '\n');
+        return `${this.event.attendee_names}${count > 0 ? `,and ${count} other${count > 1 ? 's' : ''}` : ''}`.replace(/,/g, '\n');
       }
 
       return '';
