@@ -1,5 +1,6 @@
 <template>
   <Message
+    v-if="!authenticated"
     class="new-message"
     :closable="false"
   >
