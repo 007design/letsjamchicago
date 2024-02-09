@@ -70,41 +70,44 @@ class Api::V1::EventsController < ApplicationController
   def show
     user_id = current_user ? current_user.id : 0
     # event = Event.find(params[:id])
-    event = Event.left_outer_joins({:attendees => :user})
-        .left_outer_joins({:invitations => :user})
-        .select("events.*,
-          array_remove(
-            array_agg(invitations.user_id), NULL
-          ) as invites,
-          coalesce(
-            json_agg(
-              (select * from (select users.name where users.show_attending = true) as name)
-            ) filter (where users.show_attending = true)
-          ) as attendee_names, 
-          CAST(CASE WHEN invitations.event_id = events.id
-            THEN true
-            ELSE false
-          END AS BOOLEAN) as invited,
-          COUNT(attendees.id) as attendee_count, 
-          CAST(CASE WHEN events.user_id = #{user_id} 
-            THEN true 
-            ELSE false 
-          END AS BOOLEAN) as owned, 
-          EXISTS(
-            SELECT * FROM attendees 
-            WHERE attendees.user_id = #{user_id} 
-            AND attendees.event_id = events.id
-          ) as attending"
-        )
-    event = event.where('events.id = ?', params[:id])
-    event = event.group('events.id', 'invitations.event_id')
+    # event = Event.left_outer_joins({:attendees => :user})
+    #     .left_outer_joins({:invitations => :user})
+    #     .select("events.*,
+    #       array_remove(
+    #         array_agg(distinct invitations.user_id), NULL
+    #       ) as invites,
+    #       json_agg(
+    #         distinct jsonb_build_object(
+    #           'id', users.id, 'name', users.name
+    #         )
+    #       ) as attendee_names, 
+    #       CAST(CASE WHEN invitations.event_id = events.id
+    #         THEN true
+    #         ELSE false
+    #       END AS BOOLEAN) as invited,
+    #       COUNT(attendees.id) as attendee_count, 
+    #       CAST(CASE WHEN events.user_id = #{user_id} 
+    #         THEN true 
+    #         ELSE false 
+    #       END AS BOOLEAN) as owned, 
+    #       EXISTS(
+    #         SELECT * FROM attendees 
+    #         WHERE attendees.user_id = #{user_id} 
+    #         AND attendees.event_id = events.id
+    #       ) as attending"
+    #     )
+    event = Event.where('events.id = ?', params[:id])
+    event = event.where('events.user_id = ?', user_id)
+    # event = event.group('events.id', 'invitations.event_id')
     .first
+    
+    render json: event.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date'])
       
-    if user_id > 0
-        render json: event.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date', 'cancelled', 'attendee_count', 'owned', 'attending', 'attendee_names', 'invites', 'invited'])
-    else
-      render json: event.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date', 'cancelled', 'attendee_count'])
-    end
+    # if user_id > 0
+    #     render json: event.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date', 'cancelled', 'attendee_count', 'owned', 'attending', 'attendee_names', 'invites', 'invited'])
+    # else
+    #   render json: event.to_json(:only => ['id', 'name', 'location', 'description', 'neighborhood', 'map', 'start_date', 'cancelled', 'attendee_count'])
+    # end
   end
 
   # PATCH /v1/events/:id
@@ -146,7 +149,6 @@ class Api::V1::EventsController < ApplicationController
   end
 
   def invite
-    p params
     event = Event.find(params[:id])
     for i in params[:invitations] do
       user = User.find(i)

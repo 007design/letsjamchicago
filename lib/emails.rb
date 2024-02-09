@@ -21,8 +21,6 @@ module Emails
   end
 
   def send_invitation(record)
-    p 'sending invite'
-    p record
     Mailjet::Send.create(messages: [{
       'From'=> {
         'Email'=> 'daniel@letsjamchicago.com',

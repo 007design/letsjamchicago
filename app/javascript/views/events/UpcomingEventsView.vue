@@ -4,7 +4,7 @@
     class="new-message"
     :closable="false"
   >
-    New here? Check out the <a href="about">help</a>.
+    New here? Check out the <a href="/about">help</a>.
   </Message>
   <div class="upcoming-events-header">
     <h2>Upcoming events</h2>

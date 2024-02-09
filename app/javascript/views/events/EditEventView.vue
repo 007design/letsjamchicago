@@ -185,7 +185,6 @@ export default {
           this.min = m.toString();
           this.ampm = x;
         }
-        // this.map = event.map;
       } catch (err) {
         this.$toast.add({
           severity: 'danger',

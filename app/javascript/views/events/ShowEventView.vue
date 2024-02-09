@@ -43,7 +43,7 @@
           v-if="event.neighborhood && users.length"
           class="invite-button"
           label="Invite users"
-          :disabled="invitations.length === (event.invites?.length || 0) "
+          :disabled="isInviteDisabled"
           @click="doUpdateInvitations"
         />
       </template>
@@ -112,11 +112,19 @@ export default {
     invitations() {
       return this.users.filter(({ checked }) => checked).map(({ id }) => id);
     },
+    isInviteDisabled() {
+      return this.users.filter(
+        ({ id, checked }) => checked && this.event.invites.indexOf(id) < 0,
+      ).length === 0;
+      // return invitations.length === (event.invites?.length || 0)
+    },
   },
   methods: {
     async doUpdateInvitations() {
       try {
-        await inviteUsers(this.event.id, this.invitations);
+        await inviteUsers(this.event.id, this.users.filter(
+          ({ id, checked }) => checked && this.event.invites.indexOf(id) < 0,
+        ).map(({ id }) => id));
         this.users = this.users.map((u) => ({ ...u, invited: this.invitations.includes(u.id) }));
         this.event.invites = this.invitations;
       } catch {
