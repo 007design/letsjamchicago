@@ -101,7 +101,7 @@
   <EventPreviewModal
     v-model:visible="showPreview"
     :event="previewEvent"
-    :is-new-event="clone"
+    :is-new-event="!eventId"
   />
 </template>
 

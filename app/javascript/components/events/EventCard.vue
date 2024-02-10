@@ -139,22 +139,24 @@
             />
           </template>
         </template>
-        <Tag
-          v-if="authenticated"
-          class="attendee-tag"
-          severity="success"
-          v-tooltip.focus.left="attendees"
-          tabindex="1"
-        >
-          {{ event.attendee_count }} Going
-        </Tag>
-        <Tag
-          v-else
-          class="attendee-tag"
-          severity="success"
-        >
-          {{ event.attendee_count }} Going
-        </Tag>
+        <template v-if="!isPreview">
+          <Tag
+            v-if="authenticated"
+            class="attendee-tag"
+            severity="success"
+            v-tooltip.focus.left="attendees"
+            tabindex="1"
+          >
+            {{ event.attendee_count }} Going
+          </Tag>
+          <Tag
+            v-else
+            class="attendee-tag"
+            severity="success"
+          >
+            {{ event.attendee_count }} Going
+          </Tag>
+        </template>
       </div>
     </template>
   </Card>

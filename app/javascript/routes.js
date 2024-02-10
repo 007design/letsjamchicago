@@ -29,6 +29,9 @@ async function doGetUser(to, from, next) {
   if (!authStore.user) {
     try {
       await setSignedIn();
+    } catch {
+      deleteCookie('auth');
+      authStore.$reset();
     } finally {
       next();
     }
@@ -110,16 +113,19 @@ export const routes = [
   {
     path: '/signin',
     name: 'SignIn',
+    beforeEnter: doGetUser,
     component: () => import('@/views/auth/SignInView.vue'),
   },
   {
     path: '/signup',
     name: 'SignUp',
+    beforeEnter: doGetUser,
     component: () => import('@/views/auth/RegisterView.vue'),
   },
   {
     path: '/forgot',
     name: 'ForgotPassword',
+    beforeEnter: doGetUser,
     component: () => import('@/views/auth/ForgotPasswordView.vue'),
   },
   {
