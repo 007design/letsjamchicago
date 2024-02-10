@@ -65,9 +65,9 @@ export default {
     /**
      * Load events from the server.
      */
-    async loadEvents() {
+    async loadEvents(neighborhood) {
       try {
-        const data = await getEvents({ neighborhood: this.neighborhood });
+        const data = await getEvents({ neighborhood });
 
         this.setEvents(data);
       } catch (error) {

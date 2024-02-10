@@ -15,7 +15,8 @@
             <Button
               v-else
               icon="pi pi-check"
-              severity="success"
+              severity="seondary"
+              text
               disabled
             />
           </InputGroup>

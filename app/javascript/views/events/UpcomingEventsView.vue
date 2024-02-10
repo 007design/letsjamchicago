@@ -7,7 +7,10 @@
     New here? Check out the <a href="/about">help</a>.
   </Message>
   <div class="upcoming-events-header">
-    <h2>Upcoming events</h2>
+    <h2>
+      Upcoming events
+      <template v-if="neighborhood">in {{ neighborhood }}</template>
+    </h2>
     <NeighborhoodDropdown v-model="neighborhood" showClear />
   </div>
   <EventCard
@@ -18,7 +21,8 @@
   />
   <Card v-if="!events.length" class="empty-card">
     <template #content>
-      <p>We couldn't find any events. Try selecting a different neighborhood.</p>
+      <p>We couldn't find any events<template v-if="neighborhood"> in {{ neighborhood }}</template>.
+        Try selecting a different neighborhood.</p>
       <template v-if="authenticated">
         <p>
           Or why not
@@ -70,7 +74,7 @@ export default {
   },
   watch: {
     neighborhood() {
-      this.loadEvents();
+      this.loadEvents(this.neighborhood);
     },
   },
   methods: {

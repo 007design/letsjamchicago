@@ -2,7 +2,7 @@
   <Dropdown
     id="neighborhood"
     v-model="neighborhood"
-    :options="neighborhoods"
+    :options="sortedNeighborhoods"
     filter
     placeholder="Select a neighborhood"
   />
@@ -25,6 +25,11 @@ export default {
       neighborhood: '',
       neighborhoods,
     };
+  },
+  computed: {
+    sortedNeighborhoods() {
+      return neighborhoods.sort();
+    },
   },
   watch: {
     neighborhood() {
