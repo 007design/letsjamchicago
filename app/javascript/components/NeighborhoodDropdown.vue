@@ -4,7 +4,7 @@
     v-model="neighborhood"
     :options="sortedNeighborhoods"
     filter
-    placeholder="Select a neighborhood"
+    placeholder="Filter by neighborhood"
   />
 </template>
 

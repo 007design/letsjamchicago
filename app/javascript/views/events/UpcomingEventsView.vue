@@ -10,6 +10,7 @@
     <h2>
       Upcoming events
       <template v-if="neighborhood">in {{ neighborhood }}</template>
+      <template v-else>in all of Chicago</template>
     </h2>
     <NeighborhoodDropdown v-model="neighborhood" showClear />
   </div>
