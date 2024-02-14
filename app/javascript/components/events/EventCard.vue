@@ -53,9 +53,7 @@
             <template #header>
               <h3>{{ event.name }}</h3>
             </template>
-            <div class="event-description">
-              {{ event.description }}
-            </div>
+            <div class="event-description" v-html="formattedDescription" />
             <div
               v-if="mapObject"
               class="event-map"
@@ -230,6 +228,9 @@ export default {
         '00Z',
       ].join('');
       return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(this.event.name)}&details=${encodeURIComponent(this.event.description)}&location=${encodeURIComponent(this.event.location)}&dates=${start}/${end}&ctz=America/Chicago`;
+    },
+    formattedDescription() {
+      return this.event.description.replace(/<.+?\/*>(.*?)(?:<\/.+?>)*/g, '$1').replace(/\n/g, '<br>');
     },
     mapObject() {
       try {
