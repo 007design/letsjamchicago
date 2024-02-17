@@ -101,7 +101,7 @@
   <EventPreviewModal
     v-model:visible="showPreview"
     :event="previewEvent"
-    :is-new-event="!eventId"
+    :is-new-event="!eventId || clone"
   />
 </template>
 
@@ -169,7 +169,7 @@ export default {
         const event = await getEvent(this.eventId);
         if (this.clone) {
           // eslint-disable-next-line camelcase
-          const { start_date, ...clonedEvent } = event;
+          const { id, start_date, ...clonedEvent } = event;
           this.event = clonedEvent;
         } else {
           this.event = {
